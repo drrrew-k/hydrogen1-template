@@ -73,6 +73,26 @@ export function HeaderMenu({
           </NavLink>
         );
       })}
+
+        <NavLink
+            className="header-menu-item"
+            onClick={closeAside}
+            prefetch="intent"
+            style={activeLinkStyle}
+            to={'/store/store1'}
+          >
+            store1
+        </NavLink>
+        
+        <NavLink
+            className="header-menu-item"
+            onClick={closeAside}
+            prefetch="intent"
+            style={activeLinkStyle}
+            to={'/store/store2'}
+          >
+            store2
+        </NavLink>
     </nav>
   );
 }

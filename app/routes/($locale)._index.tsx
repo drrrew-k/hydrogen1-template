@@ -16,11 +16,64 @@ export const meta: V2_MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
 
+const COLLECTIONS_QUERY = `#graphql
+  query FeaturedCollections {
+    collections(first: 3, query: "title:Apparel") {
+      nodes {
+        id
+        title
+        handle
+      }
+    }
+  }
+`;
+
+// const PRODS = `#graphql
+//   query RecommendedProducts {
+//     products(first: 3) {
+//       nodes {
+//         id
+//         title
+//         handle
+//       }
+//     }
+//   }
+// `;
+
+const PRODS = `#graphql
+query RecommendedProducts {
+  products(first:10, query: "tag:store1") {
+    nodes{
+      id
+      title
+      handle
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      images(first: 1) {
+        nodes {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+  }
+}
+ `;
+
 export async function loader({context}: LoaderArgs) {
   const {storefront} = context;
-  const {collections} = await storefront.query(FEATURED_COLLECTION_QUERY);
+  // const {collections} = await storefront.query(FEATURED_COLLECTION_QUERY);
+  const {collections} = await storefront.query(COLLECTIONS_QUERY);
   const featuredCollection = collections.nodes[0];
-  const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
+  // const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
+  const recommendedProducts = storefront.query(PRODS);
 
   return defer({featuredCollection, recommendedProducts});
 }
@@ -40,19 +93,23 @@ function FeaturedCollection({
 }: {
   collection: FeaturedCollectionFragment;
 }) {
-  const image = collection.image;
+  const image = collection ? collection.image : null;
   return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
+    <>
+      {(collection && collection.handle) && (
+        <Link
+          className="featured-collection"
+          to={`/collections/${collection.handle}`}
+        >
+          {image && (
+            <div className="featured-collection-image">
+              <Image data={image} sizes="100vw" />
+            </div>
+          )}
+          <h1>{collection.title}</h1>
+        </Link>
       )}
-      <h1>{collection.title}</h1>
-    </Link>
+    </>
   );
 }
 
