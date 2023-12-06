@@ -12,7 +12,7 @@ export function Header({header, isLoggedIn, cart, rightMenu}: HeaderProps) {
     <header className="header">
       <HeaderMenu menu={menu} viewport="desktop" />
       
-      <img className='header-logo' src={shop.brand.logo.image.url} alt="logo" />
+      {/* <img className='header-logo' src={shop.brand.logo.image.url} alt="logo" /> */}
       
       <section className="inline-section">
         <HeaderMenu menu={rightMenu.menu} viewport="desktop" />
