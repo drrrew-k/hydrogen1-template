@@ -24,25 +24,126 @@ export async function loader({request, params, context}: LoaderArgs) {
     return redirect('/collections');
   }
 
-  const {collection} = await storefront.query(COLLECTION_QUERY, {
+  const menuList = []; //{submenu1: [], submenu2: []};
+  let allItems = {};
+  let listVals = {};
+
+  const {collection, menu} = await storefront.query(COLLECTION_QUERY, {
     variables: {handle, ...paginationVariables},
+  }).then(async r => {
+    let f1 = r.collection.metafields.length;
+
+    console.log("R:", r.collection.metafields[1]);
+    await Promise.all(r.collection.metafields.map(async (el, idx) => {
+      listVals[el.key] = JSON.parse(el.value);
+    }));
+    console.log("listVals:", listVals);
+    
+    return r;
   });
+
+  const lvl = await Promise.all(Object.keys(listVals).map(async el => {
+    console.log("FD");
+    let dd = '';
+    let data = await Promise.all(listVals[el].map(async (el1) => {
+      dd = el;
+      allItems[dd] = [];
+      console.log("AllItems_DDD:", allItems);
+      let coll_data = storefront.query(COLLECTION_QUERY2, {
+        variables: {id: el1}
+      }).then(r1 => {
+        // console.log("DD:", dd);
+        // console.log("AllItems_FFF:", allItems);
+        // console.log("AllItems_[]]:", allItems[dd]);
+        // console.log(r1.collection.title);
+        // console.log("allItems:", allItems);
+        allItems[dd].push(r1.collection.title);
+        // console.log("AllItems_[]1:", allItems[dd]);
+        // console.log("allItems2:", allItems);
+        return r1.collection.title;
+      });
+      // console.log("D:", coll_data.collection.title);
+      return coll_data;
+    }));
+
+    // console.log(data);
+    return data;
+  }));
+  // console.log("D:");
+  console.log("Lvl:", lvl);
+  console.log("allItems final:", allItems);
+  // console.log("allItems:", allItems);
+  
+  
+  
+  // let f = JSON.parse(r.collection.metafields[1].value);
+  // console.log("f:", f1);
+  // let data = await Promise.all(f.map(async (el) => {
+  //   let coll_data = await storefront.query(COLLECTION_QUERY2, {
+  //     variables: {id: el}
+  //   });
+  //   console.log("D1:", coll_data);
+  //   console.log("D:", coll_data.collection.title);
+  //   menuList.push(coll_data.collection.title);
+  //   return el;
+  // }));
+
+  // console.log("cdd:", menuList);
+
+  // console.log(collection.metafields);
+  // let cdd = 1;
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
       status: 404,
     });
   }
-  return json({collection});
+  return json({collection, menu, allItems});
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const {collection, menu, allItems} = useLoaderData<typeof loader>();
 
   return (
     <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
+      <section className="collection-intro">
+        <div className='left-side'>
+          <section className="collection-sub-menu">
+            {allItems['submenu_1'].map((el) => {
+              return <p>{el}</p>
+            })}
+          </section>
+
+          <section className="collection-sub-menu">
+            {allItems['submenu_2'].map((el) => {
+              return <p>{el}</p>
+            })}
+          </section>
+
+          {/* id: {menu.id} */}
+          {/* cdd: {menuList} */}
+          {/* {collection.metafields.map((item, idx) => {
+            return (
+              <>
+                key={item.key}
+                val={item.value}
+                description={item.description}
+              </>
+            );
+          })} */}
+          {/* metafields: {collection.metafields} */}
+        </div>
+
+        <div className='right-side'>
+          <img src={collection.image.url} alt={collection.title + " collection"} />
+          <div className='collection-details'>
+            <h1>{collection.title}</h1>
+            <p className="collection-description">{collection.description}</p>
+          </div>
+        </div>
+        
+
+      </section>
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <>
@@ -161,6 +262,14 @@ const COLLECTION_QUERY = `#graphql
       id
       handle
       title
+      metafields (identifiers: [{key:"submenu_1", namespace:"custom"}, {key:"submenu_2", namespace:"custom"}]) {
+        key
+        value
+        description
+      }
+      image {
+        url
+      }
       description
       products(
         first: $first,
@@ -179,5 +288,18 @@ const COLLECTION_QUERY = `#graphql
         }
       }
     }
+    menu(handle: "main-menu") {
+      id
+    }
   }
+` as const;
+
+
+const COLLECTION_QUERY2 = `#graphql
+  query($id: ID) {
+       collection(id: $id) {
+      title
+    }
+  }
+  
 ` as const;

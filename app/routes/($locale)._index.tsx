@@ -74,17 +74,43 @@ export async function loader({context}: LoaderArgs) {
   const featuredCollection = collections.nodes[0];
   // const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
   const recommendedProducts = storefront.query(PRODS);
+  const brand = storefront.query(LOGO_QUERY).then( r => {
+    console.log("Brand fetched!");
+    console.log(r.shop.brand);
+  }).catch(err => {
+    console.log(err);
+  });
 
-  return defer({featuredCollection, recommendedProducts});
+  return defer({featuredCollection, recommendedProducts, brand});
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <HeroImage />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
+  );
+}
+
+function HeroImage() {
+  return(
+    <>
+      <section className="hero-image-section">
+        <img className='hero-image' src="https://cdn.shopify.com/s/files/1/0510/3258/8438/files/tiro-completo-menina-asiatica-feliz-indo-de-ferias-turista-com-mala-sorrindo-e-parecendo-otimista1.jpg?v=1701264728" />
+        
+        <section className="img-texts">
+          <p className='hero-title'>Hero title</p>
+          <p className='hero-subtitle'>Hero subtitle</p>
+          <div className="hero-button">
+            <a href="#" onClick={() => {return false;}}>Shop Now</a>
+          </div>
+        </section>
+
+      </section>
+    </>
   );
 }
 
@@ -173,6 +199,21 @@ const FEATURED_COLLECTION_QUERY = `#graphql
     }
   }
 ` as const;
+
+const LOGO_QUERY = `#graphql
+  query{
+    shop {
+      id
+      brand {
+        logo {
+          image {
+            url
+          }
+        }
+      }
+    }
+  }
+`;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   fragment RecommendedProduct on Product {

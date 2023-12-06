@@ -18,6 +18,7 @@ import type {HydrogenSession} from '../server';
 import favicon from '../public/favicon.svg';
 import resetStyles from './styles/reset.css';
 import appStyles from './styles/app.css';
+import customStyles from './styles/custom.css';
 import {Layout} from '~/components/Layout';
 import {cssBundleHref} from '@remix-run/css-bundle';
 
@@ -45,6 +46,7 @@ export function links() {
     ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: customStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -86,12 +88,20 @@ export async function loader({context}: LoaderArgs) {
       headerMenuHandle: 'main-menu', // Adjust to your header menu handle
     },
   });
+  
+  const headerPromise2 = storefront.query(HEADER_QUERY, {
+    cache: storefront.CacheLong(),
+    variables: {
+      headerMenuHandle: 's1-store2', // Adjust to your header menu handle
+    },
+  });
 
   return defer(
     {
       cart: cartPromise,
       footer: footerPromise,
       header: await headerPromise,
+      rightMenu: await headerPromise2,
       isLoggedIn,
       publicStoreDomain,
     },
