@@ -135,7 +135,7 @@ export default function Collection() {
         </div>
 
         <div className='right-side'>
-          {/* <img src={collection.image.url} alt={collection.title + " collection"} /> */}
+          <img src={collection.image.url} alt={collection.title + " collection"} />
           <div className='collection-details'>
             <h1>{collection.title}</h1>
             <p className="collection-description">{collection.description}</p>
