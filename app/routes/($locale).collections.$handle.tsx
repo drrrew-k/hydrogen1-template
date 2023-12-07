@@ -112,17 +112,17 @@ export default function Collection() {
       <section className="collection-intro">
         <div className='left-side'>
           <section className="collection-sub-menu">
-            {allItems.length && allItems['submenu_1'].map((el) => {
+            {Object.keys(allItems).length && allItems['submenu_1'].map((el) => {
               return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
             })}
           </section>
 
           <section className="collection-sub-menu">
-            {allItems.length && allItems['submenu_2'].map((el) => {
+            {Object.keys(allItems).length && allItems['submenu_2'].map((el) => {
               return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
             })}
           </section>
-          
+
         </div>
 
         <div className='right-side'>
