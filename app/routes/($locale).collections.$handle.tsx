@@ -32,10 +32,12 @@ export async function loader({request, params, context}: LoaderArgs) {
     variables: {handle, ...paginationVariables},
   }).then(async r => {
     let f1 = r.collection.metafields.length;
-
-    console.log("R:", r.collection.metafields[1]);
+    
+    console.log("R:", r.collection.metafields);
     await Promise.all(r.collection.metafields.map(async (el, idx) => {
-      listVals[el.key] = JSON.parse(el.value);
+      if(el) {
+        listVals[el.key] = JSON.parse(el.value);
+      }
     }));
     console.log("listVals:", listVals);
     
@@ -47,6 +49,7 @@ export async function loader({request, params, context}: LoaderArgs) {
     let dd = '';
     let data = await Promise.all(listVals[el].map(async (el1) => {
       dd = el;
+      console.log("DF");
       allItems[dd] = [];
       console.log("AllItems_DDD:", allItems);
       let coll_data = storefront.query(COLLECTION_QUERY2, {
@@ -57,7 +60,7 @@ export async function loader({request, params, context}: LoaderArgs) {
         // console.log("AllItems_[]]:", allItems[dd]);
         // console.log(r1.collection.title);
         // console.log("allItems:", allItems);
-        allItems[dd].push(r1.collection.title);
+        allItems[dd].push({title: r1.collection.title, url: r1.collection.handle});
         // console.log("AllItems_[]1:", allItems[dd]);
         // console.log("allItems2:", allItems);
         return r1.collection.title;
@@ -109,33 +112,23 @@ export default function Collection() {
       <section className="collection-intro">
         <div className='left-side'>
           <section className="collection-sub-menu">
-            {allItems['submenu_1'].map((el) => {
-              return <p>{el}</p>
+            {allItems.length && allItems['submenu_1'].map((el) => {
+              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
             })}
           </section>
 
           <section className="collection-sub-menu">
-            {allItems['submenu_2'].map((el) => {
-              return <p>{el}</p>
+            {allItems.length && allItems['submenu_2'].map((el) => {
+              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
             })}
           </section>
-
-          {/* id: {menu.id} */}
-          {/* cdd: {menuList} */}
-          {/* {collection.metafields.map((item, idx) => {
-            return (
-              <>
-                key={item.key}
-                val={item.value}
-                description={item.description}
-              </>
-            );
-          })} */}
-          {/* metafields: {collection.metafields} */}
+          
         </div>
 
         <div className='right-side'>
-          <img src={collection.image.url} alt={collection.title + " collection"} />
+          {collection.image && 
+            <img src={collection.image.url} alt={collection.title + " collection"} />
+          }
           <div className='collection-details'>
             <h1>{collection.title}</h1>
             <p className="collection-description">{collection.description}</p>
@@ -298,7 +291,8 @@ const COLLECTION_QUERY = `#graphql
 const COLLECTION_QUERY2 = `#graphql
   query($id: ID) {
        collection(id: $id) {
-      title
+      title,
+      handle
     }
   }
   
