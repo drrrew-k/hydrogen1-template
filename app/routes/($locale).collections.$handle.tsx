@@ -77,24 +77,6 @@ export async function loader({request, params, context}: LoaderArgs) {
   console.log("allItems final:", allItems);
   // console.log("allItems:", allItems);
   
-  
-  
-  // let f = JSON.parse(r.collection.metafields[1].value);
-  // console.log("f:", f1);
-  // let data = await Promise.all(f.map(async (el) => {
-  //   let coll_data = await storefront.query(COLLECTION_QUERY2, {
-  //     variables: {id: el}
-  //   });
-  //   console.log("D1:", coll_data);
-  //   console.log("D:", coll_data.collection.title);
-  //   menuList.push(coll_data.collection.title);
-  //   return el;
-  // }));
-
-  // console.log("cdd:", menuList);
-
-  // console.log(collection.metafields);
-  // let cdd = 1;
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
@@ -111,18 +93,21 @@ export default function Collection() {
     <div className="collection">
       <section className="collection-intro">
         <div className='left-side'>
+        {Object.keys(allItems).length > 0 &&
           <section className="collection-sub-menu">
-            {Object.keys(allItems).length && allItems['submenu_1'].map((el) => {
+            {allItems['submenu_1'].map((el) => {
               return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
             })}
           </section>
+          }
 
-          <section className="collection-sub-menu">
-            {Object.keys(allItems).length && allItems['submenu_2'].map((el) => {
-              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
-            })}
-          </section>
-
+          {Object.keys(allItems).length > 0 && 
+            <section className="collection-sub-menu">
+              {allItems['submenu_2'].map((el) => {
+                return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
+              })}
+            </section>
+          }
         </div>
 
         <div className='right-side'>
@@ -143,7 +128,7 @@ export default function Collection() {
             <PreviousLink>
               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
             </PreviousLink>
-            <ProductsGrid products={nodes} />
+            <ProductsGrid products={nodes} collection={collection} />
             <br />
             <NextLink>
               {isLoading ? 'Loading...' : <span>Load more ↓</span>}
@@ -155,7 +140,7 @@ export default function Collection() {
   );
 }
 
-function ProductsGrid({products}: {products: ProductItemFragment[]}) {
+function ProductsGrid({products, collection}: {products: ProductItemFragment[]}) {
   return (
     <div className="products-grid">
       {products.map((product, index) => {
@@ -163,6 +148,7 @@ function ProductsGrid({products}: {products: ProductItemFragment[]}) {
           <ProductItem
             key={product.id}
             product={product}
+            collection={collection}
             loading={index < 8 ? 'eager' : undefined}
           />
         );
@@ -174,6 +160,7 @@ function ProductsGrid({products}: {products: ProductItemFragment[]}) {
 function ProductItem({
   product,
   loading,
+  collection
 }: {
   product: ProductItemFragment;
   loading?: 'eager' | 'lazy';
@@ -181,26 +168,53 @@ function ProductItem({
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
-      to={variantUrl}
-    >
-      {product.featuredImage && (
-        <Image
-          alt={product.featuredImage.altText || product.title}
-          aspectRatio="1/1"
-          data={product.featuredImage}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
-    </Link>
+    <div className="product-item">
+      <Link
+        key={product.id}
+        prefetch="intent"
+        to={variantUrl}
+      >
+        {product.featuredImage && (
+          <Image
+            width="auto"
+            alt={product.featuredImage.altText || product.title}
+            data={product.featuredImage}
+            loading={loading}
+            sizes="(min-width: 45em) 400px, 100vw"
+          />
+        )}
+        <div className="product-details">
+          <div className="row product-info">
+            <div className="brand">{collection.title}</div>
+            <span>{product.priceRange.minVariantPrice.amount != product.priceRange.maxVariantPrice.amount && 'from'} <Money data={product.priceRange.minVariantPrice} /></span>
+          </div>
+          <div className="row">
+            <h4>{product.title}</h4>
+          </div>
+        </div>
+      </Link>
+
+      <div className='product-card product-options'>
+
+        {product.options.map((el) => {  
+          if(el.name == 'Size' || el.name == 'Color') {
+            return el.values.length > 0 ?
+              <>
+                <select>
+                  {el.values.map((inner) => {
+                    return <option value="{inner}">{inner}</option>
+                  })}
+                </select>
+              </>
+            : 
+              <></>
+          } else {
+            return <></>
+          }
+        })}
+      </div>
+          
+    </div>
   );
 }
 
@@ -213,6 +227,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    options {
+      name
+      values
+    }
     featuredImage {
       id
       altText
