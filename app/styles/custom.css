@@ -278,4 +278,8 @@
         margin-bottom: 30px;
     }
 
+    .footer-menu {
+        flex-direction: column;
+    }
+
 }
