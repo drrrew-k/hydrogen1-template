@@ -4,6 +4,7 @@ import {
   Await,
   Link,
   useLoaderData,
+  useNavigate,
   type V2_MetaFunction,
   type FetcherWithComponents,
 } from '@remix-run/react';
@@ -77,6 +78,7 @@ export async function loader({params, request, context}: LoaderArgs) {
       return redirectToFirstVariant({product, request});
     }
   }
+
 
   // In order to show which variants are available in the UI, we need to query
   // all of them. But there might be a *lot*, so instead separate the variants
@@ -159,7 +161,17 @@ function ProductMain({
     <div className="product-main">
       <h1>{title}</h1>
       <ProductPrice selectedVariant={selectedVariant} />
-      <br />
+      
+      <div className='row'>
+        <p>
+          <strong>Description</strong>
+        </p>
+        
+        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+      </div>
+      
+      
+
       <Suspense
         fallback={
           <ProductForm
@@ -182,14 +194,6 @@ function ProductMain({
           )}
         </Await>
       </Suspense>
-      <br />
-      <br />
-      <p>
-        <strong>Description</strong>
-      </p>
-      <br />
-      <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-      <br />
     </div>
   );
 }
@@ -235,56 +239,118 @@ function ProductForm({
         options={product.options}
         variants={variants}
       >
-        {({option}) => <ProductOptions key={option.name} option={option} />}
+        {({option}) => <ProductOptions key={option.name} option={option} val={"Size"}/>}
       </VariantSelector>
-      <br />
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          window.location.href = window.location.href + '#cart-aside';
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                },
-              ]
-            : []
-        }
+      
+      <VariantSelector
+        handle={product.handle}
+        options={product.options}
+        variants={variants}
       >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
+        {({option}) => <ProductOptions key={option.name} option={option} val={"Color"} />}
+      </VariantSelector>
+
+        <div className="row flex horizontal">
+          <div className="product-options">
+            <p><strong>Quantity</strong></p>
+            <div className="product-options-grid">
+              <div className="dropdown-wrapper">
+                <select className="dropdown custom count-dropdown" onChange={((e) => {countItems = parseInt(e.target.value);})}>
+                  
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                  
+                </select>
+              </div>
+
+              <AddToCartButton
+                disabled={!selectedVariant || !selectedVariant.availableForSale}
+                onClick={() => {
+                  window.location.href = window.location.href + '#cart-aside';
+                }}
+                lines={
+                  selectedVariant
+                    ? [
+                        {
+                          merchandiseId: selectedVariant.id,
+                          quantity: countItems,
+                        },
+                      ]
+                    : []
+                }
+              >
+                {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+              </AddToCartButton>
+
+            </div>
+          </div>
+        </div>
     </div>
   );
 }
 
-function ProductOptions({option}: {option: VariantOption}) {
-  return (
-    <div className="product-options" key={option.name}>
-      <h5>{option.name}</h5>
-      <div className="product-options-grid">
-        {option.values.map(({value, isAvailable, isActive, to}) => {
-          return (
-            <Link
-              className="product-options-item"
-              key={option.name + value}
-              prefetch="intent"
-              preventScrollReset
-              replace
-              to={to}
-              style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
-                opacity: isAvailable ? 1 : 0.3,
-              }}
-            >
-              {value}
-            </Link>
-          );
-        })}
+let countItems = 1;
+
+function ProductOptions({option, val=""}: {option: VariantOption, val: any}) {
+  if (option.name == val && val == "Size") return (
+    <div className="row">
+      <div className="product-options" key={option.name}>
+        <p><strong>{option.name}</strong></p>
+        <div className="product-options-grid">
+          {option.values.map(({value, isAvailable, isActive, to}) => {
+            return (
+              <Link
+                className={'product-options-item ' + (isActive ? 'active' : '')}
+                key={option.name + value}
+                prefetch="intent"
+                preventScrollReset
+                replace
+                to={to}
+                style={{
+                  opacity: isAvailable ? 1 : 0.3,
+                }}
+              >
+                {value}
+              </Link>
+            );
+          })}
+        </div>
       </div>
-      <br />
+    </div>
+  );
+  const navigate = useNavigate();
+  if (option.name == val && val == "Color") return (
+    <div className="row">
+      <div className="product-options" key={option.name}>
+        <p><strong>{option.name}</strong></p>
+        <div className="product-options-grid">
+          <div className="dropdown-wrapper">
+            <select className="dropdown custom" onChange={((e) => {
+                  navigate(e.target[e.target.selectedIndex].getAttribute('data-link'));
+                  // return redirect(e.target[e.target.selectedIndex].getAttribute('data-link'));
+                })}>
+              {option.values.map(({value, isAvailable, isActive, to}) => {
+                return (
+                  <option
+                    data-link={to}
+                    key={option.name + value}
+                    value={option.name + value}>
+                      {value}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -313,6 +379,7 @@ function AddToCartButton({
           />
           <button
             type="submit"
+            className="add-to-cart"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
           >

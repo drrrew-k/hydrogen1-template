@@ -1,3 +1,9 @@
+:root {
+    --select-border: #777;
+    --select-focus: blue;
+    --select-arrow: var(--select-border);
+  }
+
 .header-menu-item {
     color: #000;
     border: 1px solid;
@@ -153,6 +159,90 @@
 .product-card.product-options {
     display: flex;
     justify-content: space-between;
+}
+
+.product-main .row {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product-options-item {
+    width: 40px;
+    height: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #f0f0f0;
+}
+
+.product-options-item.active {
+    background-color: #54433B;
+    color: #fff;
+}
+
+.dropdown.custom {
+    height: 45px;
+    width: 190px;
+    padding: 10px;
+}
+
+.dropdown.custom {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    outline: none;
+    line-height: inherit;
+    
+    width: 100%;
+    display: grid;
+    min-width: 15ch;
+    max-width: 30ch;
+    border: 1px solid var(--select-border);
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    grid-area: select;
+}
+
+.dropdown-wrapper {
+    display: grid;
+    grid-template-areas: "select";
+    align-items: center;
+}
+
+.dropdown-wrapper:after {
+    content: "";
+    grid-area: select;
+    width: 0.8em;
+    height: 0.5em;
+    justify-self: end;
+    margin-right: 10px;
+    display: block;
+    background-color: var(--select-arrow);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+}
+
+.add-to-cart {
+    min-width: 250px;
+    border-radius: 5px;
+    background-color: #54433B;
+    color: #fff;
+    box-shadow: none;
+    outline: none;
+    border: none !important;
+    height: 45px;
+    text-transform: uppercase;
 }
 
 @media (max-width: 1024px) {
