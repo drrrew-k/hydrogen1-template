@@ -96,12 +96,17 @@ export async function loader({context}: LoaderArgs) {
     },
   });
 
+  const styles = storefront.query(CUSTOM_CSS_QUERY, {
+    cache: storefront.CacheLong(),
+  });
+
   return defer(
     {
       cart: cartPromise,
       footer: footerPromise,
       header: await headerPromise,
       rightMenu: await headerPromise2,
+      styles: await styles,
       isLoggedIn,
       publicStoreDomain,
     },
@@ -122,6 +127,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <style>{data.styles.collection.metafields[0].value}</style>
         <Layout {...data}>
           <Outlet />
         </Layout>
@@ -267,6 +273,22 @@ const HEADER_QUERY = `#graphql
     }
   }
   ${MENU_FRAGMENT}
+` as const;
+
+
+const CUSTOM_CSS_QUERY = `#graphql
+query {
+  collection(handle: "temp") {
+    id
+    handle
+    title
+    metafields (identifiers: [{key:"custom_css", namespace:"custom"}]) {
+      key
+      value
+      description
+    }
+  }
+}
 ` as const;
 
 const FOOTER_QUERY = `#graphql

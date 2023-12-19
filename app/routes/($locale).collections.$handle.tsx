@@ -31,7 +31,7 @@ export async function loader({request, params, context}: LoaderArgs) {
   const {collection, menu} = await storefront.query(COLLECTION_QUERY, {
     variables: {handle, ...paginationVariables},
   }).then(async r => {
-    let f1 = r.collection.metafields.length;
+    let fields = r.collection.metafields.length;
     
     console.log("R:", r.collection.metafields);
     await Promise.all(r.collection.metafields.map(async (el, idx) => {
@@ -39,43 +39,30 @@ export async function loader({request, params, context}: LoaderArgs) {
         listVals[el.key] = JSON.parse(el.value);
       }
     }));
-    console.log("listVals:", listVals);
     
     return r;
   });
 
   const lvl = await Promise.all(Object.keys(listVals).map(async el => {
-    console.log("FD");
-    let dd = '';
+    let cur_item = '';
     let data = await Promise.all(listVals[el].map(async (el1) => {
-      dd = el;
-      console.log("DF");
-      allItems[dd] = [];
-      console.log("AllItems_DDD:", allItems);
+      cur_item = el;
+      allItems[cur_item] = [];
       let coll_data = storefront.query(COLLECTION_QUERY2, {
         variables: {id: el1}
       }).then(r1 => {
-        // console.log("DD:", dd);
-        // console.log("AllItems_FFF:", allItems);
-        // console.log("AllItems_[]]:", allItems[dd]);
         // console.log(r1.collection.title);
         // console.log("allItems:", allItems);
-        allItems[dd].push({title: r1.collection.title, url: r1.collection.handle});
-        // console.log("AllItems_[]1:", allItems[dd]);
-        // console.log("allItems2:", allItems);
+        allItems[cur_item].push({title: r1.collection.title, url: r1.collection.handle});
         return r1.collection.title;
       });
-      // console.log("D:", coll_data.collection.title);
       return coll_data;
     }));
 
-    // console.log(data);
     return data;
   }));
-  // console.log("D:");
   console.log("Lvl:", lvl);
   console.log("allItems final:", allItems);
-  // console.log("allItems:", allItems);
   
 
   if (!collection) {
