@@ -88,7 +88,7 @@ export default function Collection() {
           }
 
           {Object.keys(allItems).length > 0 && allItems['submenu_2']?.length > 0 &&
-            <section className="collection-sub-menu"> 
+            <section className="collection-sub-menu">
               {allItems['submenu_2']?.map((el) => {
                 return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
               })}
