@@ -33,8 +33,7 @@ export async function loader({request, params, context}: LoaderArgs) {
   }).then(async r => {
     let fields = r.collection.metafields.length;
     
-    console.log("R:", r.collection.metafields);
-    await Promise.all(r.collection.metafields.map(async (el, idx) => {
+    await Promise.all(r.collection.metafields?.map(async (el, idx) => {
       if(el) {
         listVals[el.key] = JSON.parse(el.value);
       }
@@ -80,17 +79,17 @@ export default function Collection() {
     <div className="collection">
       <section className="collection-intro">
         <div className='left-side'>
-        {Object.keys(allItems).length > 0 &&
-          <section className="collection-sub-menu">
-            {allItems['submenu_1'].map((el) => {
-              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
-            })}
-          </section>
+          {Object.keys(allItems).length > 0 && allItems['submenu_1']?.length > 0 &&
+            <section className="collection-sub-menu">
+              {allItems['submenu_1']?.map((el) => {
+                return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
+              })}
+            </section>
           }
 
-          {Object.keys(allItems).length > 0 && 
+          {Object.keys(allItems).length > 0 && allItems['submenu_2']?.length > 0 &&
             <section className="collection-sub-menu">
-              {allItems['submenu_2'].map((el) => {
+              {allItems['submenu_2']?.map((el) => {
                 return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
               })}
             </section>

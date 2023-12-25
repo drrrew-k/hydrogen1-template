@@ -100,6 +100,9 @@ export async function loader({context}: LoaderArgs) {
     cache: storefront.CacheLong(),
   });
 
+  const STRAPI_URL = context.env.CMS_API_URL.replace(/\/$/, "");;
+  const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => r.json());
+
   return defer(
     {
       cart: cartPromise,
@@ -107,6 +110,7 @@ export async function loader({context}: LoaderArgs) {
       header: await headerPromise,
       rightMenu: await headerPromise2,
       styles: await styles,
+      cms_styles: await cms_styles,
       isLoggedIn,
       publicStoreDomain,
     },
@@ -128,7 +132,14 @@ export default function App() {
       </head>
       <body>
         <style>{data.styles.collection.metafields[0].value}</style>
-        <Layout {...data}>
+        
+        <style>
+          {data.cms_styles.snippets?.map((s) => {
+            return s.code;
+          })}
+        </style>
+        
+          <Layout {...data}>
           <Outlet />
         </Layout>
         <ScrollRestoration nonce={nonce} />
