@@ -101,7 +101,8 @@ export async function loader({context}: LoaderArgs) {
   });
 
   const STRAPI_URL = context.env.CMS_API_URL.replace(/\/$/, "");
-  const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => {let res = r.json(); console.log("get-css response"); console.log(res); return res;} );
+  const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => {let res = r.text(); /*let res = r.json();*/ console.log("get-css response"); console.log(res); return res;} )
+  .then(r => {console.log("r:", r); console.log(r); return r;});
 
   return defer(
     {
