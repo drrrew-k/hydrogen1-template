@@ -11,7 +11,7 @@ import {useVariantUrl} from '~/utils';
 
 export const meta: V2_MetaFunction = ({data}) => {
   return [{title: `Hydrogen | ${data.collection.title} Collection`}];
-}; 
+};
 
 export async function loader({request, params, context}: LoaderArgs) {
   const {handle} = params;
