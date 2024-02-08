@@ -156,18 +156,22 @@ function ProductItem({
   return (
     <div className="product-item">
       <Link
+        className="product-link"
         key={product.id}
         prefetch="intent"
         to={variantUrl}
       >
         {product.featuredImage && (
-          <Image
-            width="auto"
-            alt={product.featuredImage.altText || product.title}
-            data={product.featuredImage}
-            loading={loading}
-            sizes="(min-width: 45em) 400px, 100vw"
-          />
+          <div className="image-wrapper">
+            <Image
+              className='product-image'
+              width="auto"
+              alt={product.featuredImage.altText || product.title}
+              data={product.featuredImage}
+              loading={loading}
+              sizes="(min-width: 45em) 400px, 100vw"
+            />
+          </div>
         )}
         <div className="product-details">
           <div className="row product-info">

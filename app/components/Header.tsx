@@ -1,4 +1,4 @@
-import {Await, NavLink, useMatches} from '@remix-run/react';
+import {Await, Link, NavLink, useMatches} from '@remix-run/react';
 import {Suspense} from 'react';
 import type {LayoutProps} from './Layout';
 
@@ -13,6 +13,15 @@ export function Header({header, isLoggedIn, cart, rightMenu}: HeaderProps) {
       <HeaderMenu menu={menu} viewport="desktop" />
       
       {/* <img className='header-logo' srcx={shop.brand.logo.image.url} alt="logo" /> */}
+      <div className='header-logo'>
+        <Link
+          prefetch="intent"
+          to="/"
+        >
+          <img srcx="http://localhost:1337/uploads/thumbnail_dummy_logo_5b_2f479636b8.png" src="http://localhost:1337/uploads/thumbnail_dummy_logo_5b_2f479636b8.png" />
+          
+        </Link>
+      </div>
       
       <section className="inline-section">
         <HeaderMenu menu={rightMenu.menu} viewport="desktop" />
@@ -78,23 +87,6 @@ export function HeaderMenu({
         );
       })}
 
-        <NavLink
-            className="header-menu-item"
-            onClick={closeAside}
-            prefetch="intent"
-            to={'/store/store1'}
-          >
-            store1
-        </NavLink>
-        
-        <NavLink
-            className="header-menu-item"
-            onClick={closeAside}
-            prefetch="intent"
-            to={'/store/store2'}
-          >
-            store2
-        </NavLink>
     </nav>
   );
 }

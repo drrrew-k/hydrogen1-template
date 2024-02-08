@@ -20,8 +20,16 @@
     height: 63px;
 }
 
+.header-logo img {
+    height: 100%;
+}
+
 .hero-image {
     width: 100%;
+}
+
+.product-link {
+    display: block;
 }
 
 .img-texts {
@@ -138,9 +146,19 @@
 }
 
 .product-item img {
-    height: 90%;
+    /* height: 90%; */
     /* width: auto; */
-    width: 100%;
+    /* width: 100%; */
+}
+
+.image-wrapper {
+    height: 190px;
+    display: flex;
+    justify-content: center;
+}
+
+.image-wrapper img {
+    height: 100%;
 }
 
 .brand {
@@ -243,6 +261,12 @@
     border: none !important;
     height: 45px;
     text-transform: uppercase;
+}
+
+@media (min-width: 1024px) {
+    .product-item {
+        width: 80%;
+    }
 }
 
 @media (max-width: 1024px) {

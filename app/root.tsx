@@ -99,7 +99,8 @@ export async function loader({context}: LoaderArgs) {
   const styles = storefront.query(CUSTOM_CSS_QUERY, {
     cache: storefront.CacheLong(),
   });
-
+  
+  //http://localhost:1337/api/store1-settings/1/?populate=*
   const STRAPI_URL = context.env.CMS_API_URL.replace(/\/$/, "");
   console.log("TEST URL:", `${STRAPI_URL}/get-css`);
   const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => r.json() );
