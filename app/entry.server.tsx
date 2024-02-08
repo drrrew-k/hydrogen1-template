@@ -13,6 +13,8 @@ export default async function handleRequest(
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     styleSrc: [
       "'self'",
+      'data:',
+      'cdn.shopify.com',
       'http://localhost',
       'localhost',
       'localhost:1337',
