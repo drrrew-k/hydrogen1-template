@@ -28,14 +28,15 @@ export function Layout({
   footer,
   header,
   isLoggedIn,
-  rightMenu
+  rightMenu,
+  header_img
 }: LayoutProps) {
   return (
     <>
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside menu={header.menu} />
-      <Header header={header} cart={cart} isLoggedIn={isLoggedIn} rightMenu={rightMenu} />
+      <Header header={header} header_img={header_img} cart={cart} isLoggedIn={isLoggedIn} rightMenu={rightMenu} />
       <main>{children}</main>
       <Suspense>
         <Await resolve={footer}>

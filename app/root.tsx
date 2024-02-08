@@ -60,7 +60,7 @@ export function links() {
 }
 
 export async function loader({context}: LoaderArgs) {
-  const {storefront, session, cart} = context;
+  const {storefront, session, cart } = context;
   const customerAccessToken = await session.get('customerAccessToken');
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
@@ -104,6 +104,7 @@ export async function loader({context}: LoaderArgs) {
   const STRAPI_URL = context.env.CMS_API_URL.replace(/\/$/, "");
   console.log("TEST URL:", `${STRAPI_URL}/get-css`);
   const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => r.json() );
+  const header_img = fetch(`${STRAPI_URL}/get-store1-settings`).then(r => r.json() );
   return defer(
     {
       cart: cartPromise,
@@ -113,6 +114,7 @@ export async function loader({context}: LoaderArgs) {
       styles: await styles,
       cms_styles: await cms_styles,
       isLoggedIn,
+      header_img: await header_img,
       publicStoreDomain,
     },
     {headers},

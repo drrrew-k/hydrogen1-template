@@ -25,6 +25,8 @@ export default async function handleRequest(
       'data:',
       'cdn.shopify.com',
       'http://localhost',
+      'http://70.34.196.235:5599',
+      'http://70.34.196.235',
       'localhost',
       'localhost:1337',
       'http://localhost:1337',

@@ -6,7 +6,7 @@ type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
-export function Header({header, isLoggedIn, cart, rightMenu}: HeaderProps) {
+export function Header({header, header_img, isLoggedIn, cart, rightMenu}: HeaderProps) {
   const {shop, menu } = header;
   return (
     <header className="header">
@@ -18,7 +18,8 @@ export function Header({header, isLoggedIn, cart, rightMenu}: HeaderProps) {
           prefetch="intent"
           to="/"
         >
-          <img srcx="http://localhost:1337/uploads/thumbnail_dummy_logo_5b_2f479636b8.png" src="http://localhost:1337/uploads/thumbnail_dummy_logo_5b_2f479636b8.png" />
+          
+          <img srcx={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} src={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} />
           
         </Link>
       </div>
