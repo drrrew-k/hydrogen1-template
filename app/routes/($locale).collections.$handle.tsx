@@ -162,15 +162,17 @@ function ProductItem({
         to={variantUrl}
       >
         {product.featuredImage && (
-          <div className="image-wrapper">
-            <Image
+          <div className="image-wrapper"
+            style={{backgroundImage: 'url(' + product.featuredImage.url + ')', backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}>
+            {/* <Image
+              style={{visibility: 'hidden'}}
               className='product-image'
               width="auto"
               alt={product.featuredImage.altText || product.title}
               data={product.featuredImage}
               loading={loading}
               sizes="(min-width: 45em) 400px, 100vw"
-            />
+            /> */}
           </div>
         )}
         <div className="product-details">
