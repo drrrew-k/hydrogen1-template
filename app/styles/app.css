@@ -303,7 +303,7 @@ aside li {
 * --------------------------------------------------
 */
 .featured-collection {
-  display: block;
+  display: inline-block;
   margin-bottom: 2rem;
   position: relative;
 }

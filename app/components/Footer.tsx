@@ -1,10 +1,35 @@
 import {useMatches, NavLink} from '@remix-run/react';
 import type {FooterQuery} from 'storefrontapi.generated';
+import { Link } from '@remix-run/react';
 
-export function Footer({menu}: FooterQuery) {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
+
+export function Footer({menu, header_img}: FooterQuery) {
+
+  
   return (
     <footer className="footer">
       <FooterMenu menu={menu} />
+
+      <div className='footer-right'>
+        <div className='footer-logo'>
+          <Link
+            prefetch="intent"
+            to="/"
+            >
+            <img srcx={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} src={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} />
+            
+          </Link>
+        </div>
+
+        <div className='footer-socials'>
+          <a href="#"><FontAwesomeIcon icon={faTwitter} className="inside-button" /></a>
+
+          <a href="#"><FontAwesomeIcon icon={faInstagram} className="inside-button" /></a>
+          <a href="#"><FontAwesomeIcon icon={faFacebook} className="inside-button" /></a>
+        </div>
+      </div>
     </footer>
   );
 }
@@ -93,7 +118,7 @@ function activeLinkStyle({
   isPending: boolean;
 }) {
   return {
-    fontWeight: isActive ? 'bold' : undefined,
+    fontWeight: '',
     color: isPending ? 'grey' : 'white',
   };
 }

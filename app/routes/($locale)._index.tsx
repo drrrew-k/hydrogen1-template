@@ -12,6 +12,15 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
+import tileCross from '../img/tile1.png';
+import tileDentist from '../img/tile2.png';
+import tileVet from '../img/tile3.png';
+import tileCulinary from '../img/tile4.png';
+
 export const meta: V2_MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -39,6 +48,212 @@ const COLLECTIONS_QUERY = `#graphql
 //     }
 //   }
 // `;
+
+function NextArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style }}
+      onClick={onClick}
+    >Next</div>
+  );
+}
+
+function PrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style }}
+      onClick={onClick}
+    >Prev</div>
+  );
+}
+
+
+export function SimpleSlider({
+  products,
+}: {
+  products: Promise<RecommendedProductsQuery>;
+}) {
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 2,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 900,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          arrows: false,
+        },
+      },
+    ],
+  };
+  return (
+      
+      <div className='site-section'>
+        <div className="collection-heading">
+          <h2>Best Sellers</h2>
+        </div>
+        <Await resolve={products}>
+          {({products}) => (
+              <Slider {...settings}>
+                  {products.nodes.map((item) => (
+                    <div className='slider-item' key={item.id}>
+                      <div className='slider-upper-block' style={{backgroundImage: 'url(' + item.images.nodes[0].url + ')'}}>
+                        <Image
+                          data={item.images.nodes[0]}
+                          aspectRatio="1/1"
+                          style={{visibility: 'hidden'}}
+                          sizes="(min-width: 45em) 20vw, 50vw"
+                          />
+                      </div>
+                      <div className='slider-lower-block'>
+                        <h4>{item.title}</h4>
+                        <span className='price'>
+                          <Money data={item.priceRange.minVariantPrice} />
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+              </Slider>
+          )}
+        </Await>
+      </div>
+  );
+}
+
+export function CategoryRow({
+  products,
+}: {
+  products: Promise<RecommendedProductsQuery>;
+}) {
+  return (
+      
+      <div className='site-section'>
+        <div className="collection-heading">
+          <h2>Shop by Industry</h2>
+        </div>
+        <Await resolve={products}>
+          {({products}) => (
+            <div className='tiles'>
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={tileCross}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                    <p className='tile-title'>Healthcare</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={tileDentist}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Dentistry</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={tileVet}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Veterinary</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={tileCulinary}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Culinary</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Await>
+      </div>
+  );
+}
+
+
+export function TextTilesRow() {
+  return (
+      
+      <>
+        <div className='text-tiles-wrapper'>
+            <div className='text-tiles'>
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>Simple or complex customization</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>Favourable bulk pricing</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>We are fast</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>White glove service</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+            </div>
+        </div>
+      </>
+  );
+}
+
 
 const PRODS = `#graphql
 query RecommendedProducts {
@@ -88,25 +303,44 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <HeroImage />
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <HeroImage title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
+      {/* <FeaturedCollection collection={data.featuredCollection} /> */}
+      <SimpleSlider products={data.recommendedProducts} />
+      {/* <RecommendedProducts products={data.recommendedProducts} /> */}
+      <CategoryRow products={data.recommendedProducts} />
+      <HeroImage title="Looking to outfit your team?" buttons={['Get a quote']} />
+      <TextTilesRow />
+      <HeroImage title="Let our team help your team" />
     </div>
   );
 }
 
-function HeroImage() {
+function HeroImage({
+                title = 'Hero title',
+                buttons = [],
+                imgsrc="https://cdn.shopify.com/s/files/1/0510/3258/8438/files/tiro-completo-menina-asiatica-feliz-indo-de-ferias-turista-com-mala-sorrindo-e-parecendo-otimista1.jpg?v=1701264728"
+          } : {title: string, buttons?: Array<String>, imgsrc?: string}) {
   return(
     <>
       <section className="hero-image-section">
-        <img className='hero-image' src="https://cdn.shopify.com/s/files/1/0510/3258/8438/files/tiro-completo-menina-asiatica-feliz-indo-de-ferias-turista-com-mala-sorrindo-e-parecendo-otimista1.jpg?v=1701264728" />
+        <img className='hero-image' src={imgsrc}/>
         
         <section className="img-texts">
-          <p className='hero-title'>Hero title</p>
-          <p className='hero-subtitle'>Hero subtitle</p>
-          <div className="hero-button">
-            <a href="#" onClick={() => {return false;}}>Shop Now</a>
+          <section className='text-block'>
+            <p className='hero-title'>{title}</p>
+            {/* <p className='hero-subtitle'>Hero subtitle</p> */}
+          </section>
+          <section className='button-block'>
+
+          {buttons.map((b) => {
+            return <div className="hero-button">
+            <a href="#" onClick={() => {return false;}}>{b}</a>
           </div>
+        })}
+
+
+
+          </section>
         </section>
 
       </section>
@@ -146,7 +380,7 @@ function RecommendedProducts({
 }) {
   return (
     <div className="recommended-products">
-      <h2>Recommended Products</h2>
+      <h2>Recommended products</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (

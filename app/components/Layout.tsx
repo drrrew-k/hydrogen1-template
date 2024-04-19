@@ -40,7 +40,7 @@ export function Layout({
       <main>{children}</main>
       <Suspense>
         <Await resolve={footer}>
-          {(footer) => <Footer menu={footer.menu} />}
+          {(footer) => <Footer menu={footer.menu} header_img={header_img} />}
         </Await>
       </Suspense>
     </>

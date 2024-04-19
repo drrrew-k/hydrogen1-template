@@ -22,6 +22,8 @@ import customStyles from './styles/custom.css';
 import {Layout} from '~/components/Layout';
 import {cssBundleHref} from '@remix-run/css-bundle';
 
+import { useState, useLayoutEffect, useEffect } from 'react';
+
 // This is important to avoid re-fetching root queries on sub-navigations
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
@@ -124,6 +126,38 @@ export async function loader({context}: LoaderArgs) {
 export default function App() {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
+  // let bodyClass = 'body-dark';
+  
+  const [bodyClass, setBodyClass] = useState('body-dark');
+
+
+  useLayoutEffect(() => {
+    let savedStyle = window.localStorage.getItem("bodyStyle");
+    if(savedStyle == null) {
+      savedStyle = 'body-dark';
+    }
+    setBodyClass(savedStyle);
+  }, []);
+  
+  // useEffect(() => {
+  //   const savedStyle = window.localStorage.getItem("bodyStyle");
+  //   alert(savedStyle);
+  //   alert('useLayoutEffect');
+  //   setBodyClass(savedStyle);
+  //   window.localStorage.setItem("bodyStyle", bodyClass);
+  // }, [bodyClass]);
+  
+  
+  function switchStyle(event: React.MouseEvent<HTMLDivElement>) {
+    let newStyle = '';
+    if(bodyClass == 'body-dark') {
+      newStyle = 'body-light';
+    } else {
+      newStyle = 'body-dark';
+    }
+    setBodyClass(newStyle);
+    window.localStorage.setItem("bodyStyle", newStyle);
+  }
 
   return (
     <html lang="en">
@@ -133,7 +167,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className={bodyClass}>
+        <div className="change-styles" onClick={switchStyle}>Change styles; current: {bodyClass}</div>
         <style>{data.styles.collection.metafields[0].value}</style>
         
         <style>
