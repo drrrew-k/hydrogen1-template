@@ -80,6 +80,7 @@ export async function loader({request, params, context}: LoaderArgs) {
     });
   }
 
+  // let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
   let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true')
   .then(r => r.json())
   .then(r => {
