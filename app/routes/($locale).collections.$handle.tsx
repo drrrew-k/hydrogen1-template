@@ -80,8 +80,8 @@ export async function loader({request, params, context}: LoaderArgs) {
     });
   }
 
-  // let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
-  let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true')
+  // let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true')
+  let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
   .then(r => r.json())
   .then(r => {
     console.log("Response fecthed!", r.filter.options);
@@ -125,10 +125,10 @@ export function FilterList(el, filters, handle, query) {
         <div className='form-group'>
           <p>
 
-          <label className="cb-container link"><span>{el.el}</span>
-            <input type="checkbox" name="tags" value={el.el} defaultChecked={el.query.includes(el.el)} />
-            <span className="checkmark"></span>
-          </label>
+            <label className="cb-container link"><span>{el.el}</span>
+              <input type="checkbox" name="tags" value={el.el} defaultChecked={el.query.includes(el.el)} />
+              <span className="checkmark"></span>
+            </label>
 
           </p>
         </div>
