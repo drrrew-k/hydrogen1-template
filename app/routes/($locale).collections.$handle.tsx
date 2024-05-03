@@ -16,6 +16,8 @@ export const meta: V2_MetaFunction = ({data}) => {
   return [{title: `Hydrogen | ${data.collection.title} Collection`}];
 };
 
+const https = require('https');
+
 export async function loader({request, params, context}: LoaderArgs) {
   const {handle} = params;
   
@@ -80,17 +82,22 @@ export async function loader({request, params, context}: LoaderArgs) {
     });
   }
 
+
   // let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true')
   let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
   .then(r => r.json())
   .then(r => {
-    console.log("Response fecthed!", r.filter.options);
+    // console.log("Response fecthed!", r.filter.options);
     // console.log("Products:!", r.products.nodes);
     let products = r.products;
     // console.log("products!", [products]);
     // console.log("Details", r.filter.options[3].values);
+    // let filters = r.filter.options.filter(element => {
+    //   return element.label == 'Industry';
+    // });
+
     let filters = r.filter.options.filter(element => {
-      return element.label == 'Industry';
+      return element.label == 'Size' || element.label == 'Color';
     });
 
 
@@ -102,12 +109,14 @@ export async function loader({request, params, context}: LoaderArgs) {
   });
 
 
-  console.log("data:", filterOptions.filters[0].manualValues);
+  // console.log("data:", filterOptions.filters[0].manualValues);
+  console.log("data:", filterOptions);
   // console.log("products:", filterOptions.products);
   // filterOptions = filterOptions[0].manualValues;
   // console.log("manualValues:", filterOptions);
   const products = filterOptions.products; 
-  const filters = filterOptions.filters[0].manualValues; 
+  console.log("The filters:");
+  const filters = (filterOptions.filters.length > 0 && Object.keys(filterOptions.filters[0]).includes('manualValues')) ? filterOptions.filters[0].manualValues : [];
   // const checkedStates = filterOptions.checkedStates;
   return json({collection, menu, allItems, products, filters, handle});
 }
@@ -213,8 +222,8 @@ export default function Collection() {
   console.log(queryParams.search);
 
 
-  checkedStates[0].checked = true;
-  console.log("checkedStates:", checkedStates);
+  // checkedStates[0].checked = true;
+  // console.log("checkedStates:", checkedStates);
   //https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true
   //r['filter']['options'][3]
   //https://services.mybcapps.com/bc-sf-filter/search?shop=cheatersfirststore.myshopify.com&tag=Culinary
