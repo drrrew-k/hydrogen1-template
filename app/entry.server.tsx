@@ -19,6 +19,7 @@ export default async function handleRequest(
       'localhost',
       'localhost:1337',
       'http://localhost:1337',
+      'https://hydrogen1-02a424e396cf1878f4cf.o2.myshopify.dev'
     ],
     imgSrc: [
       "'self'",
