@@ -169,9 +169,9 @@ export default function App() {
       </head>
       <body className={bodyClass}>
         <div className="change-styles" onClick={switchStyle}>Change styles; current: {bodyClass}</div>
-        <style nonce={nonce}>{data.styles.collection.metafields[0].value}</style>
+        <style nonce={'nonce-' + nonce}>{data.styles.collection.metafields[0].value}</style>
         
-        <style nonce={nonce}>
+        <style nonce={'nonce-' + nonce}>
           {data.cms_styles.snippets?.map((s) => {
             return s.code;
           })}
