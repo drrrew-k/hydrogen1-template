@@ -13,6 +13,7 @@ export default async function handleRequest(
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     styleSrc: [
       "'self'",
+      "'unsafe-inline'",
       'data:',
       'cdn.shopify.com',
       'http://localhost',
@@ -52,6 +53,10 @@ export default async function handleRequest(
   if (isbot(request.headers.get('user-agent'))) {
     await body.allReady;
   }
+
+  console.log("FDFDFDFDFDFDFDFDFDFD!!!!!!!!!!!!!!!!!!!!!");
+  console.log(header);
+  console.log(nonce);
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);

@@ -303,14 +303,14 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <HeroImage title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
+      <HeroImage key="hero1" title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <SimpleSlider products={data.recommendedProducts} />
       {/* <RecommendedProducts products={data.recommendedProducts} /> */}
       <CategoryRow products={data.recommendedProducts} />
-      <HeroImage title="Looking to outfit your team?" buttons={['Get a quote']} />
+      <HeroImage key="hero2" title="Looking to outfit your team?" buttons={['Get a quote']} />
       <TextTilesRow />
-      <HeroImage title="Let our team help your team" />
+      <HeroImage key="hero3" title="Let our team help your team" />
     </div>
   );
 }
@@ -322,7 +322,7 @@ function HeroImage({
           } : {title: string, buttons?: Array<String>, imgsrc?: string}) {
   return(
     <>
-      <section className="hero-image-section">
+      <section className="hero-image-section" key={"key" + Math.random() * 10}>
         <img className='hero-image' src={imgsrc}/>
         
         <section className="img-texts">

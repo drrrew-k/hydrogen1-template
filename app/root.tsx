@@ -131,13 +131,13 @@ export default function App() {
   const [bodyClass, setBodyClass] = useState('body-dark');
 
 
-  useLayoutEffect(() => {
-    let savedStyle = window.localStorage.getItem("bodyStyle");
-    if(savedStyle == null) {
-      savedStyle = 'body-dark';
-    }
-    setBodyClass(savedStyle);
-  }, []);
+  // useLayoutEffect(() => {
+  //   let savedStyle = window.localStorage.getItem("bodyStyle");
+  //   if(savedStyle == null) {
+  //     savedStyle = 'body-dark';
+  //   }
+  //   setBodyClass(savedStyle);
+  // }, []);
   
   // useEffect(() => {
   //   const savedStyle = window.localStorage.getItem("bodyStyle");
@@ -169,19 +169,19 @@ export default function App() {
       </head>
       <body className={bodyClass}>
         <div className="change-styles" onClick={switchStyle}>Change styles; current: {bodyClass}</div>
-        <style nonce={'nonce-' + nonce}>{data.styles.collection.metafields[0].value}</style>
+        <style nonce={"nonce-" + nonce}>{data.styles.collection.metafields[0].value}</style>
         
-        <style nonce={'nonce-' + nonce}>
+        <style>
           {data.cms_styles.snippets?.map((s) => {
             return s.code;
           })}
         </style>
         
-          <Layout {...data}>
+        <Layout {...data}>
           <Outlet />
         </Layout>
         <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
+        <Scripts nonce={nonce} /> {/*this!!! */}
         <LiveReload nonce={nonce} />
       </body>
     </html>
@@ -192,6 +192,7 @@ export function ErrorBoundary() {
   const error = useRouteError();
   const [root] = useMatches();
   const nonce = useNonce();
+
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
