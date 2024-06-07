@@ -318,7 +318,7 @@ export default function Homepage() {
 function HeroImage({
                 title = 'Hero title',
                 buttons = [],
-                imgsrc="https://cdn.shopify.com/s/files/1/0510/3258/8438/files/tiro-completo-menina-asiatica-feliz-indo-de-ferias-turista-com-mala-sorrindo-e-parecendo-otimista1.jpg?v=1701264728"
+                imgsrc="https://cdn.shopify.com/s/files/1/1721/8901/files/pexels-alexandra-haddad-9317179.jpg?v=1717795912"
           } : {title: string, buttons?: Array<String>, imgsrc?: string}) {
   return(
     <>
