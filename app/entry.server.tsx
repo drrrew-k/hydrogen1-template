@@ -23,6 +23,7 @@ export default async function handleRequest(
       'https://hydrogen1-02a424e396cf1878f4cf.o2.myshopify.dev'
     ],
     imgSrc: [
+      "*",
       "'self'",
       'data:',
       'cdn.shopify.com',
@@ -54,7 +55,7 @@ export default async function handleRequest(
     await body.allReady;
   }
 
-  console.log("FDFDFDFDFDFDFDFDFDFD!!!!!!!!!!!!!!!!!!!!!");
+  console.log("CSP header:");
   console.log(header);
   console.log(nonce);
 
