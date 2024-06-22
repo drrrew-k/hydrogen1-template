@@ -27,6 +27,8 @@ body.body-light {
 }
 
 .header-logo {
+    margin-left: auto;
+    margin-right: auto;
     height: 63px;
 }
 

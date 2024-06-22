@@ -18,7 +18,7 @@ export function Footer({menu, header_img}: FooterQuery) {
             prefetch="intent"
             to="/"
             >
-            <img srcx={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} src={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} />
+            <img srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
             
           </Link>
         </div>

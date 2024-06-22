@@ -9,27 +9,33 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, header_img, isLoggedIn, cart, rightMenu}: HeaderProps) {
   const {shop, menu } = header;
   return (
-    <header className="header">
-      <HeaderMenu menu={menu} viewport="desktop" />
-      
-      {/* <img className='header-logo' srcx={shop.brand.logo.image.url} alt="logo" /> */}
-      <div className='header-logo'>
-        <Link
-          prefetch="intent"
-          to="/"
-        >
-          
-          <img srcx={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} src={"http://70.34.196.235:5599" + header_img.data.attributes.store_logo.data.attributes.url} />
-          
-        </Link>
-      </div>
-      
-      <section className="inline-section">
-        <HeaderMenu menu={rightMenu.menu} viewport="desktop" />
-        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-      </section>
+      <section className="header-wrapper">
 
-    </header>
+          <header className="header">
+            
+            {/* <img className='header-logo' srcx={shop.brand.logo.image.url} alt="logo" /> */}
+            <div className='header-logo'>
+              <Link
+                prefetch="intent"
+                to="/"
+              >
+                
+                <img srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
+                
+              </Link>
+            </div>
+            
+            <section className="inline-section">
+              {/* <HeaderMenu menu={rightMenu.menu} viewport="desktop" /> */}
+              <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+            </section>
+
+          </header>
+
+          <section className='header-menu-wrapper'>
+            <HeaderMenu menu={menu} viewport="desktop" />
+          </section>
+      </section>
   );
 }
 

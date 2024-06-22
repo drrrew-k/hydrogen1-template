@@ -33,6 +33,9 @@ export default async function handleRequest(
       'localhost',
       'localhost:1337',
       'http://localhost:1337',
+      'https://hydrogencms.drew-k.com:81',
+      'https://hydrogencms.drew-k.com:81/',
+      'https://hydrogencms.drew-k.com',
     ],
   });
 
