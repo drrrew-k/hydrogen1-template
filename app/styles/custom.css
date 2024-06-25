@@ -660,6 +660,10 @@ main .collection {
     max-width: 248px;
 }
 
+.footer-logo img {
+    height: 63px;
+}
+
 @media (max-width: 900px) {
     .product-info {
         width: 110%;
