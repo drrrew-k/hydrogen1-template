@@ -130,6 +130,8 @@ export default function App() {
   
   const [bodyClass, setBodyClass] = useState('body-dark');
 
+  console.log("Header data:");
+  console.log(data.header_img.data.font_link);
 
   // useLayoutEffect(() => {
   //   let savedStyle = window.localStorage.getItem("bodyStyle");
@@ -167,11 +169,19 @@ export default function App() {
         <Meta />
         <Links />
 
+        {/* fonts: */}
+        {/* {"" + data.header_img.data.attributes.font_link}  */}
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+
       </head>
       <body className={bodyClass}>
         <div className="change-styles" onClick={switchStyle}>Change styles; current: {bodyClass}</div>
         <style nonce={"nonce-" + nonce}>{data.styles.collection.metafields[0].value}</style>
         
+
         <style>
           {data.cms_styles.snippets?.map((s) => {
             return s.code;
