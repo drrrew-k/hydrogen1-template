@@ -7,9 +7,9 @@
 }
 
 
-html, body {
+/* html, body {
     font-family: "Open Sans";
-  }
+  } */
 
 body.body-dark {
     --current-accent: var(--color-accent-dark);

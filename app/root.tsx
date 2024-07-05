@@ -131,7 +131,17 @@ export default function App() {
   const [bodyClass, setBodyClass] = useState('body-dark');
 
   console.log("Header data:");
-  console.log(data.header_img.data.font_link);
+  console.log(data.header_img.data.attributes.font_link);
+  let fonts_data = data.header_img.data.attributes.font_link;
+  fonts_data = fonts_data.split("\n");
+  console.log("fonts_data == ");
+  
+  // let el = fonts_data[0];
+  // el = el.replace('<link rel="preconnect" ', "");
+  // el = el.replace('href="', "");
+  // el = el.replace('">', "");
+
+
 
   // useLayoutEffect(() => {
   //   let savedStyle = window.localStorage.getItem("bodyStyle");
@@ -168,25 +178,42 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
-
-        {/* fonts: */}
-        {/* {"" + data.header_img.data.attributes.font_link}  */}
         
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+        {
+          fonts_data.map(e => {
+            let el = e;
+            let f_type = 'preconnect'
+            if(el.search("stylesheet") != -1) {
+              f_type = 'stylesheet';
+            }
 
+            el = el.replace('<link ', "");
+            el = el.replace('rel="preconnect"', "");
+            el = el.replace('rel="stylesheet"', "");
+            el = el.replace('crossorigin', "");
+            el = el.replace('href="', "");
+            el = el.replace('" >', "");
+            el = el.replace('>', "");
+            el = el.replace('"', "");
+            return <link data-test="DD" rel={f_type} href={el.trim()}></link>
+          })
+        }
+        
       </head>
       <body className={bodyClass}>
         <div className="change-styles" onClick={switchStyle}>Change styles; current: {bodyClass}</div>
         <style nonce={"nonce-" + nonce}>{data.styles.collection.metafields[0].value}</style>
         
 
-        <style>
+        {/* <style>
           {data.cms_styles.snippets?.map((s) => {
             return s.code;
           })}
-        </style>
+        </style> */}
+
+          {data.cms_styles.snippets?.map((s) => {
+            return <style dangerouslySetInnerHTML={{__html: s.code}} />
+          })}
         
         <Layout {...data}>
           <Outlet />
