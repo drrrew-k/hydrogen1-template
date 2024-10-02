@@ -87,8 +87,8 @@ export async function loader({request, params, context}: LoaderArgs) {
   let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
   .then(r => r.json())
   .then(r => {
-    // console.log("Response fecthed!", r.filter.options);
-    // console.log("Products:!", r.products.nodes);
+    console.log("Response fecthed!", r.filter.options);
+    console.log("Products:!", r.products.nodes);
     let products = r.products;
     // console.log("products!", [products]);
     // console.log("Details", r.filter.options[3].values);

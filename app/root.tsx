@@ -104,9 +104,9 @@ export async function loader({context}: LoaderArgs) {
   
   //http://localhost:1337/api/store1-settings/1/?populate=*
   const STRAPI_URL = context.env.CMS_API_URL.replace(/\/$/, "");
-  console.log("TEST URL:", `${STRAPI_URL}/get-css`);
-  const cms_styles = fetch(`${STRAPI_URL}/get-css`).then(r => r.json() );
-  const header_img = fetch(`${STRAPI_URL}/get-store1-settings`).then(r => r.json() );
+  console.log("TEST URL:", `${context.env.BACKEND_URL}/get-css`);
+  const cms_styles = fetch(`${context.env.BACKEND_URL}/get-css`).then(r => r.json() );
+  const header_img = fetch(`${context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json() );
   return defer(
     {
       cart: cartPromise,
@@ -130,8 +130,9 @@ export default function App() {
   
   const [bodyClass, setBodyClass] = useState('body-dark');
 
-  console.log("Header data:");
-  console.log(data.header_img.data.attributes.font_link);
+  // console.log("Header data:");
+  // console.log(data);
+  // console.log(data.header_img.data.attributes.font_link);
   let fonts_data = data.header_img.data.attributes.font_link;
   fonts_data = fonts_data.split("\n");
   console.log("fonts_data == ");
