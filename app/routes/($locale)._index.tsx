@@ -152,7 +152,7 @@ export function CategoryRow({
                 <div className='tile-contents'>
                   <img
                     className='tile-image'
-                    src={url + store_settings.data.attributes.block1_logo.data.attributes.url}
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block1_logo.data.attributes.url}
                     data-item="50"
                     aspectRatio="1/1"
                     sizes="(min-width: 45em) 20vw, 50vw"
@@ -166,7 +166,7 @@ export function CategoryRow({
                 <div className='tile-contents'>
                   <img
                     className='tile-image'
-                    src={url + store_settings.data.attributes.block2_logo.data.attributes.url}
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block2_logo.data.attributes.url}
                     data-item="50"
                     aspectRatio="1/1"
                     sizes="(min-width: 45em) 20vw, 50vw"
@@ -180,7 +180,7 @@ export function CategoryRow({
                 <div className='tile-contents'>
                   <img
                     className='tile-image'
-                    src={url + store_settings.data.attributes.block3_logo.data.attributes.url}
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block3_logo.data.attributes.url}
                     data-item="50"
                     aspectRatio="1/1"
                     sizes="(min-width: 45em) 20vw, 50vw"
@@ -194,7 +194,7 @@ export function CategoryRow({
                 <div className='tile-contents'>
                   <img
                     className='tile-image'
-                    src={url + store_settings.data.attributes.block4_logo.data.attributes.url}
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block4_logo.data.attributes.url}
                     data-item="50"
                     aspectRatio="1/1"
                     sizes="(min-width: 45em) 20vw, 50vw"
@@ -300,23 +300,29 @@ export async function loader({context}: LoaderArgs) {
     console.log(err);
   });
 
-  const store_settings = await fetch(`${context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json() );
-  // console.log("store settings: ");
-  // console.log(store_settings);
+  console.log("context:");
+  console.log(`${context.env.BACKEND_URL}` + "/get-store1-settings");
+  // const store_settings = await fetch(`${context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json() );
+  // let store_settings = {};
+  // store_settings = await fetch(`${context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json().then(data => {return data;}) );
+  const store_settings = await fetch(`${context.env.BACKEND_URL}/get-store1-settings`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
+  console.log("store settings: ");
+  console.log(store_settings);
   return defer({
     featuredCollection,
     recommendedProducts,
     brand,
-    store_settings,
+    store_settings: await store_settings.json(),
     backend_url: context.env.CMS_API_URL,
   });
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-
+  
   console.log("data from Homepage:");
-  console.log(data.store_settings.data.attributes.block1_logo.data.attributes.url);
+  console.log(data);
+  // console.log(data.store_settings.data.attributes.block1_logo.data.attributes.url);
   console.log("EOL==============================================================");
   return (
     <div className="home">
@@ -325,6 +331,13 @@ export default function Homepage() {
       <SimpleSlider products={data.recommendedProducts} />
       {/* <RecommendedProducts products={data.recommendedProducts} /> */}
       <CategoryRow products={data.recommendedProducts} store_settings={data.store_settings} url={data.backend_url} />
+      
+      {/* <Await resolve={data.store_settings}>
+        {({store_settings}) => (
+          <CategoryRow products={data.recommendedProducts} store_settings={data.store_settings} url={data.backend_url} />
+        )}
+      </Await> */}
+
       <HeroImage key="hero2" title="Looking to outfit your team?" buttons={['Get a quote']} />
       <TextTilesRow />
       <HeroImage key="hero3" title="Let our team help your team" />
