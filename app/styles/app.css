@@ -48,16 +48,10 @@ aside header .close {
   text-decoration: none;
   transition: all 200ms;
   width: 20px;
-<<<<<<< HEAD
 }
 
 aside header .close:hover {
   opacity: 1;
-=======
-  &:hover {
-    opacity: 1;
-  }
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 }
 
 aside header h2 {
@@ -71,16 +65,10 @@ aside main {
 
 aside p {
   margin: 0 0 0.25rem;
-<<<<<<< HEAD
 }
 
 aside p:last-child {
   margin: 0;
-=======
-  &:last-child {
-    margin: 0;
-  }
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 }
 
 aside li {
@@ -124,7 +112,6 @@ aside li {
   width: 100%;
 }
 
-<<<<<<< HEAD
 .overlay.expanded {
   opacity: 1;
   pointer-events: auto;
@@ -153,18 +140,6 @@ button.reset:not(:has(> *)) {
 button.reset:hover:not(:has(> *)) {
   text-decoration: underline;
   cursor: pointer;
-=======
-.overlay {
-  &:target {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-  }
-  /* reveal aside */
-  &:target aside {
-    transform: translateX(calc(var(--aside-width) * -1));
-  }
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 }
 
 /*
@@ -226,14 +201,6 @@ button.reset:hover:not(:has(> *)) {
   margin-top: auto;
 }
 
-<<<<<<< HEAD
-=======
-.footer-menu-missing {
-  display: inline-block;
-  margin: 1rem;
-}
-
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 .footer-menu {
   align-items: center;
   display: flex;
@@ -285,11 +252,7 @@ button.reset:hover:not(:has(> *)) {
   width: calc(var(--aside-width) - 40px);
 }
 
-<<<<<<< HEAD
 .cart-line-quantity {
-=======
-.cart-line-quantiy {
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
   display: flex;
 }
 
@@ -349,7 +312,6 @@ button.reset:hover:not(:has(> *)) {
   margin-bottom: 0.5rem;
 }
 
-<<<<<<< HEAD
 .search-results-item a {
   display: flex;
   flex: row;
@@ -357,19 +319,13 @@ button.reset:hover:not(:has(> *)) {
   gap: 1rem;
 }
 
-=======
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 /*
 * --------------------------------------------------
 * routes/__index
 * --------------------------------------------------
 */
 .featured-collection {
-<<<<<<< HEAD
   display: block;
-=======
-  display: inline-block;
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
   margin-bottom: 2rem;
   position: relative;
 }
@@ -437,13 +393,8 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .product-item img {
-<<<<<<< HEAD
   height: auto;
   width: 100%;
-=======
-  /* height: auto;
-  width: 100%; */
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 }
 
 /*
@@ -463,14 +414,6 @@ button.reset:hover:not(:has(> *)) {
   margin-top: 0;
 }
 
-<<<<<<< HEAD
-=======
-.product-images {
-  display: grid;
-  grid-gap: 1rem;
-}
-
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 .product-image img {
   height: auto;
   width: 100%;
@@ -537,13 +480,6 @@ button.reset:hover:not(:has(> *)) {
 * routes/account
 * --------------------------------------------------
 */
-<<<<<<< HEAD
-=======
-.account-profile-marketing {
-  display: flex;
-  align-items: center;
-}
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 
 .account-logout {
   display: inline-block;

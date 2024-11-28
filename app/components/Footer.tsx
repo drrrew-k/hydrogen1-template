@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {Suspense} from 'react';
 import {Await, NavLink} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
@@ -42,47 +41,6 @@ function FooterMenu({
   primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
   publicStoreDomain: string;
 }) {
-=======
-import {useMatches, NavLink} from '@remix-run/react';
-import type {FooterQuery} from 'storefrontapi.generated';
-import { Link } from '@remix-run/react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTwitter, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
-
-export function Footer({menu, header_img}: FooterQuery) {
-
-  
-  return (
-    <footer className="footer">
-      <FooterMenu menu={menu} />
-
-      <div className='footer-right'>
-        <div className='footer-logo'>
-          <Link
-            prefetch="intent"
-            to="/"
-            >
-            <img srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
-            
-          </Link>
-        </div>
-
-        <div className='footer-socials'>
-          <a href="#"><FontAwesomeIcon icon={faTwitter} className="inside-button" /></a>
-
-          <a href="#"><FontAwesomeIcon icon={faInstagram} className="inside-button" /></a>
-          <a href="#"><FontAwesomeIcon icon={faFacebook} className="inside-button" /></a>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterMenu({menu}: Pick<FooterQuery, 'menu'>) {
-  const [root] = useMatches();
-  const publicStoreDomain = root?.data?.publicStoreDomain;
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
   return (
     <nav className="footer-menu" role="navigation">
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
@@ -90,12 +48,8 @@ function FooterMenu({menu}: Pick<FooterQuery, 'menu'>) {
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
-<<<<<<< HEAD
           item.url.includes(publicStoreDomain) ||
           item.url.includes(primaryDomainUrl)
-=======
-          item.url.includes(publicStoreDomain)
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
             ? new URL(item.url).pathname
             : item.url;
         const isExternal = !url.startsWith('/');
@@ -169,11 +123,7 @@ function activeLinkStyle({
   isPending: boolean;
 }) {
   return {
-<<<<<<< HEAD
     fontWeight: isActive ? 'bold' : undefined,
-=======
-    fontWeight: '',
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
     color: isPending ? 'grey' : 'white',
   };
 }

@@ -1,5 +1,4 @@
 body {
-<<<<<<< HEAD
   font-family:
     system-ui,
     -apple-system,
@@ -12,10 +11,6 @@ body {
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
-=======
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
   margin: 0;
   padding: 0;
 }
@@ -84,12 +79,7 @@ body {
 }
 
 body > main {
-<<<<<<< HEAD
   margin: 0 1rem 1rem 1rem;
-=======
-  /* margin: 0 1rem 1rem 1rem; */
-  margin: 0 3rem 2rem 3rem;
->>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 }
 
 section {
