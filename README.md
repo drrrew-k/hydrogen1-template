@@ -2,6 +2,7 @@
 
 Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dovetail with [Remix](https://remix.run/), Shopify’s full stack web framework. This template contains a **minimal setup** of components, queries and tooling to get started with Hydrogen.
 
+<<<<<<< HEAD
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/hydrogen-template)
 
 - [Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
@@ -14,6 +15,17 @@ Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dov
 - Shopify CLI
 - Configured deployment to Netlify, with Server-Side Rendering (SSR) via [Netlify Edge
   Functions](https://docs.netlify.com/edge-functions/overview/)
+=======
+[Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
+[Get familiar with Remix](https://remix.run/docs/en/v1)
+
+## What's included
+
+- Remix
+- Hydrogen
+- Oxygen
+- Shopify CLI
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 - ESLint
 - Prettier
 - GraphQL generator
@@ -22,6 +34,7 @@ Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dov
 
 ## Getting started
 
+<<<<<<< HEAD
 We highly recommend using this template to deploy a Hydrogen site to Netlify.
 
 **Requirements:**
@@ -47,6 +60,14 @@ Then follow the instructions in `.env.example` and you're ready to start develop
 
 ```bash
 npm run dev
+=======
+**Requirements:**
+
+- Node.js version 16.14.0 or higher
+
+```bash
+npm create @shopify/hydrogen@latest
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
 ```
 
 ## Building for production
@@ -55,6 +76,7 @@ npm run dev
 npm run build
 ```
 
+<<<<<<< HEAD
 ## FAQ and Troubleshooting
 
 ## How do I configure my Hydrogen session / storefront client / customer account client / cart handler?
@@ -96,3 +118,10 @@ simulation of the Oxygen hosting platform. It therefore isn't compatible with a 
 deployed to Netlify.
 
 Instead, use the [Netlify CLI](https://docs.netlify.com/cli/get-started/) (e.g. `netlify serve`).
+=======
+## Local development
+
+```bash
+npm run dev
+```
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85

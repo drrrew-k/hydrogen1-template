@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "include": [
     "./**/*.d.ts",
     "./**/*.ts",
@@ -10,6 +11,11 @@
       "DOM.Iterable",
       "ES2022"
     ],
+=======
+  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx"],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -22,10 +28,16 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+<<<<<<< HEAD
     "paths": {
       "~/*": [
         "app/*"
       ]
+=======
+    "types": ["@shopify/oxygen-workers-types"],
+    "paths": {
+      "~/*": ["app/*"]
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
     },
     "noEmit": true
   }

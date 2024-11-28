@@ -5,8 +5,12 @@ node_modules
 /public/build
 /.mf
 .env
+<<<<<<< HEAD
 .env.*
 .shopify
 
 # Local Netlify folder
 .netlify
+=======
+.shopify
+>>>>>>> f8c63f65662a0f274a196ada90b2d25e4703bb85
