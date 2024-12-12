@@ -1,5 +1,5 @@
 import {defer, redirect, type LoaderFunctionArgs} from '@netlify/remix-runtime';
-import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
+import {useLoaderData, Link, type MetaFunction, useSearchParams} from '@remix-run/react';
 import {
   getPaginationVariables,
   Image,
@@ -21,7 +21,27 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return defer({...deferredData, ...criticalData});
+  let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
+  .then(r => r.json())
+  .then(r => {
+    console.log("Response fecthed!", r.filter.options);
+    console.log("Products:!", r.products.nodes);
+    let products = r.products;
+
+    let filters = r.filter.options.filter(element => {
+      return element.label == 'Size' || element.label == 'Color';
+    });
+
+
+    return {products: products, filters: filters }
+
+  });
+
+  const products = filterOptions.products;
+  const filters = (filterOptions.filters.length > 0 && Object.keys(filterOptions.filters[0]).includes('manualValues')) ? filterOptions.filters[0].manualValues : [];
+  
+
+  return defer({...deferredData, ...criticalData, products, filters});
 }
 
 /**
@@ -70,35 +90,192 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   return {};
 }
 
+// export default function Collection() {
+//   const {collection} = useLoaderData<typeof loader>();
+
+//   return (
+//     <div className="collection">
+//       <h1>{collection.title}</h1>
+//       <p className="collection-description">{collection.description}</p>
+//       <PaginatedResourceSection
+//         connection={collection.products}
+//         resourcesClassName="products-grid"
+//       >
+//         {({node: product, index}) => (
+//           <ProductItem
+//             key={product.id}
+//             product={product}
+//             loading={index < 8 ? 'eager' : undefined}
+//           />
+//         )}
+//       </PaginatedResourceSection>
+//       <Analytics.CollectionView
+//         data={{
+//           collection: {
+//             id: collection.id,
+//             handle: collection.handle,
+//           },
+//         }}
+//       />
+//     </div>
+//   );
+// }
+
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const [query] = useSearchParams();
+
+  const enabledFilters = query.getAll('tags');
+  const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
+  console.log("pdorudcts:");
+  console.log(products);
+
+  // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
+  let checkedStates = [];
+  console.log("filters BEFORE:");
+  console.log(filters);
+  console.log("checkedStates BEFORE:");
+  console.log(checkedStates);
+    
+  for(let i = 0; i < filters.length; i++) {
+    console.log("checkedStates.length:", checkedStates.length);
+    checkedStates.push({tag: filters[i], checked: false});
+    console.log("filters[i]: ", filters[i]);
+    console.log("checkedStates[i]: ", checkedStates[i]);
+    console.log("checkedStates SETTING:", checkedStates[i]);
+    console.log("checkedStates:", checkedStates);
+  }
+  console.log("filters AFTER:");
+  console.log(filters);
+  console.log("checkedStates AFTER:", checkedStates);
+
+
+  // checkedStates[0].checked = true;
+  // console.log("checkedStates:", checkedStates);
+  //https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true
+  //r['filter']['options'][3]
+  //https://services.mybcapps.com/bc-sf-filter/search?shop=cheatersfirststore.myshopify.com&tag=Culinary
+  // const submit = useSubmit();
 
   return (
     <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
-      <Analytics.CollectionView
-        data={{
-          collection: {
-            id: collection.id,
-            handle: collection.handle,
-          },
-        }}
-      />
+      <div className='left-side collection-filters'>
+        <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
+          <h2>Industry</h2>
+            {
+              filters.map((el) => {
+                return <FilterList el={el} filters={checkedStates} handle={handle} query={enabledFilters} />
+              })
+            }
+
+        </form>
+        {/* {Object.keys(allItems).length > 0 && allItems['submenu_1']?.length > 0 &&
+          <section className="collection-sub-menu">
+            {allItems['submenu_1']?.map((el) => {
+              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
+            })}
+          </section>
+        }
+
+        {Object.keys(allItems).length > 0 && allItems['submenu_2']?.length > 0 &&
+          <section className="collection-sub-menu">
+            {allItems['submenu_2']?.map((el) => {
+              return <p><a href={"/collections/" + el.url}>{el.title}</a></p>
+            })}
+          </section>
+        } */}
+      </div>
+
+      <div className="collection-data">
+
+        <section className="collection-intro">
+
+          <div className='right-side'>
+            {collection.image && 
+              <div className="collection-img" style={{backgroundImage: 'url(' + collection.image.url + ')'}}>
+                <img src={collection.image.url} alt={collection.title + " collection"} />
+              </div>
+            }
+            <div className='collection-details'>
+              <p className='collection-header'>Shop {collection.title.toLowerCase()}</p>
+              <p className="collection-description">{collection.description}</p>
+            </div>
+          </div>
+          
+        </section>
+
+        <div className="collection-products">
+          {products.map(el => {
+            return enabledFilters.length ?
+              el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle)) && <SingleItem item={el} />
+              :
+              el.collections.some(c => c.handle == collection.handle) && <SingleItem item={el} />
+              ;
+          })}
+
+        </div>
+        {/* <Pagination connection={collection.products}>
+          {({nodes, isLoading, PreviousLink, NextLink}) => (
+            <>
+              <PreviousLink>
+                {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+              </PreviousLink>
+              <p className='collection-products-header'><span>All items</span> <span>Sort by</span></p>
+              <ProductsGrid products={nodes} collection={collection} />
+              <br />
+              <NextLink>
+                {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+              </NextLink>
+            </>
+          )}
+        </Pagination> */}
+      </div>
     </div>
   );
+}
+
+export function SingleItem({item}) {
+  // console.log(item);
+  // const variant = item.variants[0];
+  console.log("variant:");
+  console.log(item);
+  // const variantUrl = useVariantUrl(item.handle, variant.selectedOptions);
+  // const variantUrl = useVariantUrl(item.handle, '42449850728598');
+  return (
+    <div
+      className="product-link"
+    >
+      <div>
+      <div className='slider-item single-item' key={item.id}>
+      <Link
+      className="product-link"
+      key={item.id}
+      prefetch="intent"
+      to={`/products/${item.handle}`}
+    >
+        
+                      <div className='slider-upper-block' style={{backgroundImage: 'url(' + ((item.images && Object.keys(item.images).length > 0) ? item.images[Object.keys(item.images)[0]] : "")  + ')', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+                        <Image
+                          data={(item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "")}
+                          aspectRatio="1/1"
+                          style={{visibility: 'hidden'}}
+                          sizes="(min-width: 45em) 20vw, 50vw"
+                          />
+                      </div>
+                      <div className='slider-lower-block'>
+                        <h4>{item.title}</h4>
+                        <span className='price'>
+                          ${item.variants[Object.keys(item.variants)[0]].price}
+                        </span>
+                      </div>
+        </Link>
+        </div>
+      {/* <div className='single-product'>
+        <img className='single-product-image' src={item.images[Object.keys(item.images)[0]]} />
+        {item.title}
+      </div> */}
+      </div>
+      </div>
+  )
 }
 
 function ProductItem({
@@ -186,6 +363,9 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        url
+      }
       products(
         first: $first,
         last: $last,

@@ -31,6 +31,7 @@ export function PageLayout({
   header,
   isLoggedIn,
   publicStoreDomain,
+  header_img
 }: PageLayoutProps) {
   return (
     <Aside.Provider>
@@ -49,6 +50,7 @@ export function PageLayout({
       <Footer
         footer={footer}
         header={header}
+        header_img={header_img}
         publicStoreDomain={publicStoreDomain}
       />
     </Aside.Provider>

@@ -15,7 +15,10 @@ import favicon from '~/assets/favicon.svg';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from '~/components/PageLayout';
+import customStyles from '~/styles/custom.css';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+
+import { useState, useLayoutEffect, useEffect } from 'react';
 
 export type RootLoader = typeof loader;
 
@@ -41,6 +44,7 @@ export function links() {
   return [
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: customStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -59,8 +63,9 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
-
+  
   const {storefront, env} = args.context;
+  const header_img = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json() );
 
   return defer({
     ...deferredData,
@@ -74,6 +79,7 @@ export async function loader(args: LoaderFunctionArgs) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
+    header_img: header_img,
   });
 }
 
@@ -130,6 +136,18 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>('root');
+  const [bodyClass, setBodyClass] = useState('body-light');
+  
+  function switchStyle(event: React.MouseEvent<HTMLDivElement>) {
+    let newStyle = '';
+    if(bodyClass == 'body-dark') {
+      newStyle = 'body-light';
+    } else {
+      newStyle = 'body-dark';
+    }
+    setBodyClass(newStyle);
+    window.localStorage.setItem("bodyStyle", newStyle);
+  }
 
   return (
     <html lang="en">
@@ -139,7 +157,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className={bodyClass}>
         {data ? (
           <Analytics.Provider
             cart={data.cart}
@@ -158,7 +176,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
   );
 }
 
-export default function App() {
+export default function App() {  
   return <Outlet />;
 }
 

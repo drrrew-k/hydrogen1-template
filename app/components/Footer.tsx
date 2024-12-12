@@ -1,6 +1,9 @@
 import {Suspense} from 'react';
 import {Await, NavLink} from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons'
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -11,6 +14,7 @@ interface FooterProps {
 export function Footer({
   footer: footerPromise,
   header,
+  header_img,
   publicStoreDomain,
 }: FooterProps) {
   return (
@@ -25,6 +29,25 @@ export function Footer({
                 publicStoreDomain={publicStoreDomain}
               />
             )}
+
+            <div className='footer-right'>
+              <div className='footer-logo'>
+                  <Link
+                    prefetch="intent"
+                    to="/"
+                    >
+                    <img srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
+                    
+                  </Link>
+                </div>
+
+                <div className='footer-socials'>
+                  <a href="#"><FontAwesomeIcon icon={faTwitter} className="inside-button" /></a>
+
+                  <a href="#"><FontAwesomeIcon icon={faInstagram} className="inside-button" /></a>
+                  <a href="#"><FontAwesomeIcon icon={faFacebook} className="inside-button" /></a>
+                </div>
+            </div>
           </footer>
         )}
       </Await>

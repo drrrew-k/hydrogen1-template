@@ -15,10 +15,17 @@ export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
+
+
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return defer({...deferredData, ...criticalData});
+  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
+  console.log("store settings: ");
+  console.log(store_settings);
+
+  return defer({...deferredData, ...criticalData, store_settings: await store_settings.json(),
+    backend_url: args.context.env.CMS_API_URL,});
 }
 
 /**
@@ -59,9 +66,61 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <HeroImage key="hero1" title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
       <FeaturedCollection collection={data.featuredCollection} />
+      <CategoryRow products={data.recommendedProducts} store_settings={data.store_settings} url={data.backend_url} />
       <RecommendedProducts products={data.recommendedProducts} />
+      <HeroImage key="hero2" title="Looking to outfit your team?" buttons={['Get a quote']} />
+      <TextTilesRow />
+      <HeroImage key="hero3" title="Let our team help your team" />
     </div>
+  );
+}
+
+export function TextTilesRow() {
+  return (
+      
+      <>
+        <div className='text-tiles-wrapper'>
+            <div className='text-tiles'>
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>Simple or complex customization</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>Favourable bulk pricing</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>We are fast</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+              
+              <div className='text-tile' >
+                <div className='tile-header'>
+                    <span>White glove service</span>
+                </div>
+                <p className='tile-description'>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi inventore ut tempore nam totam repudiandae sint
+                </p>
+              </div>
+            </div>
+        </div>
+      </>
   );
 }
 
@@ -84,6 +143,119 @@ function FeaturedCollection({
       )}
       <h1>{collection.title}</h1>
     </Link>
+  );
+}
+
+export function CategoryRow({
+  products,
+  store_settings,
+  url,
+}: {
+  products: Promise<RecommendedProductsQuery>,
+  store_settings: JSON,
+  url: string,
+}) {
+  return (
+      
+      <div className='site-section'>
+        <div className="collection-heading">
+          <h2>Shop by Industry</h2>
+        </div>
+        <Await resolve={products}>
+          {({products}) => (
+            <div className='tiles'>
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block1_logo.data.attributes.url}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                    <p className='tile-title'>Healthcare</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block2_logo.data.attributes.url}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Dentistry</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block3_logo.data.attributes.url}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Veterinary</p>
+                </div>
+              </div>
+              
+              <div className='category-tile' >
+                <div className='tile-contents'>
+                  <img
+                    className='tile-image'
+                    src={url.replace(/\/$/, "") + store_settings.data.attributes.block4_logo.data.attributes.url}
+                    data-item="50"
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                    />
+
+                  <p className='tile-title'>Culinary</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Await>
+      </div>
+  );
+}
+
+function HeroImage({
+                title = 'Hero title',
+                buttons = [],
+                imgsrc="https://cdn.shopify.com/s/files/1/1721/8901/files/pexels-alexandra-haddad-9317179.jpg?v=1717795912"
+          } : {title: string, buttons?: Array<String>, imgsrc?: string}) {
+  return(
+    <>
+      <section className="hero-image-section" key={"key" + Math.random() * 10}>
+        <img className='hero-image' src={imgsrc}/>
+        
+        <section className="img-texts">
+          <section className='text-block'>
+            <p className='hero-title' key={"key" + Math.random() * 10}>{title}</p>
+            {/* <p className='hero-subtitle'>Hero subtitle</p> */}
+          </section>
+          <section className='button-block'>
+
+          {buttons.map((b) => {
+            return <div className="hero-button">
+            <a href="#" onClick={() => {return false;}}>{b}</a>
+          </div>
+        })}
+
+
+
+          </section>
+        </section>
+
+      </section>
+    </>
   );
 }
 
