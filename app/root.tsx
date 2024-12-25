@@ -15,7 +15,7 @@ import favicon from '~/assets/favicon.svg';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from '~/components/PageLayout';
-import customStyles from '~/styles/custom.css';
+import customStyles from '~/styles/custom.css?url';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 
 import { useState, useLayoutEffect, useEffect } from 'react';

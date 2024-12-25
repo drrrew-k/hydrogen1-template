@@ -9,6 +9,7 @@ import {
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import { useSubmit } from "@remix-run/react";
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -20,28 +21,70 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const {handle} = args.params;
 
   let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
   .then(r => r.json())
   .then(r => {
-    console.log("Response fecthed!", r.filter.options);
-    console.log("Products:!", r.products.nodes);
     let products = r.products;
 
     let filters = r.filter.options.filter(element => {
-      return element.label == 'Size' || element.label == 'Color';
+      if(['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
+        return true;
+      } else {
+        return false;
+      }
+      // return Object.keys(element).includes('label') && element.label != '';
+      // return Object.keys(element).includes('label') && element.label != '';
     });
 
 
     return {products: products, filters: filters }
 
+  }).then(e => {
+    
+    e.filters.map(el => {
+        if(Object.keys(el).includes('manuvalues') && el.manualValues) {
+          return el.manualValues;
+        }
+        return el.values;
+      });
+
+    return e;
   });
 
   const products = filterOptions.products;
-  const filters = (filterOptions.filters.length > 0 && Object.keys(filterOptions.filters[0]).includes('manualValues')) ? filterOptions.filters[0].manualValues : [];
-  
+  var filteredVals = [];
+  var filters = await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(filterOptions);
+    }, 1000);
+}).then(r => {
+  let fil = [];
 
-  return defer({...deferredData, ...criticalData, products, filters});
+  let innerItems = {};
+   filterOptions.filters.forEach(el => {
+    innerItems = {};
+    innerItems.label = el.label;
+    innerItems.values = [];
+    if(Object.keys(el).includes('manualValues') && el.manualValues) {
+       el.manualValues.map(item => {
+        innerItems.values.push(item);
+      });
+      fil.push(innerItems);
+    } else {
+      if(el.values.length) {
+        el.values.map(item => {
+          innerItems.values.push(item['key']);
+        });
+        fil.push(innerItems);
+      }
+    }
+  });
+  return fil;
+});
+
+  return defer({...deferredData, ...criticalData, products, filters, handle});
 }
 
 /**
@@ -121,49 +164,65 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 //   );
 // }
 
+export function FilterList(el, onchange, filters, handle, query) {
+
+  function dd(document, tag) {
+    // document.querySelector('#filters-form').submit();
+  }
+
+  return (
+    <div>
+      
+        <div className='form-group'>
+          <p>
+
+            <label className="cb-container link"><span>{el.el}</span>
+              <input type="checkbox" name="tags" value={el.el} onChange={el.onchange} defaultChecked={el.query.includes(el.el)}/>
+              <span className="checkmark"></span>
+            </label>
+
+          </p>
+        </div>
+    </div>
+  );
+}
+
 export default function Collection() {
   const [query] = useSearchParams();
 
   const enabledFilters = query.getAll('tags');
   const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
-  console.log("pdorudcts:");
-  console.log(products);
+  // console.log("pdorudcts:");
+  // console.log(products);
 
   // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
   let checkedStates = [];
-  console.log("filters BEFORE:");
-  console.log(filters);
-  console.log("checkedStates BEFORE:");
-  console.log(checkedStates);
     
   for(let i = 0; i < filters.length; i++) {
-    console.log("checkedStates.length:", checkedStates.length);
     checkedStates.push({tag: filters[i], checked: false});
-    console.log("filters[i]: ", filters[i]);
-    console.log("checkedStates[i]: ", checkedStates[i]);
-    console.log("checkedStates SETTING:", checkedStates[i]);
-    console.log("checkedStates:", checkedStates);
   }
-  console.log("filters AFTER:");
-  console.log(filters);
-  console.log("checkedStates AFTER:", checkedStates);
 
 
-  // checkedStates[0].checked = true;
-  // console.log("checkedStates:", checkedStates);
   //https://services.mybcapps.com/bc-sf-filter/filter?shop=cheatersfirststore.myshopify.com&build_filter_tree=true
   //r['filter']['options'][3]
   //https://services.mybcapps.com/bc-sf-filter/search?shop=cheatersfirststore.myshopify.com&tag=Culinary
-  // const submit = useSubmit();
+
+  const submit = useSubmit();
 
   return (
     <div className="collection">
       <div className='left-side collection-filters'>
+            
         <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
-          <h2>Industry</h2>
+            
             {
               filters.map((el) => {
-                return <FilterList el={el} filters={checkedStates} handle={handle} query={enabledFilters} />
+               
+                return <> <h2>{el.label}</h2>
+                {el.values.map(item => {
+                  return <FilterList el={item} onchange={submit} filters={checkedStates} handle={handle} query={enabledFilters} />
+                })}
+                </>
               })
             }
 
@@ -208,7 +267,7 @@ export default function Collection() {
             return enabledFilters.length ?
               el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle)) && <SingleItem item={el} />
               :
-              el.collections.some(c => c.handle == collection.handle) && <SingleItem item={el} />
+              <>{ el.collections.some(c => c.handle == collection.handle) && <SingleItem item={el} /> }</>
               ;
           })}
 
@@ -234,12 +293,6 @@ export default function Collection() {
 }
 
 export function SingleItem({item}) {
-  // console.log(item);
-  // const variant = item.variants[0];
-  console.log("variant:");
-  console.log(item);
-  // const variantUrl = useVariantUrl(item.handle, variant.selectedOptions);
-  // const variantUrl = useVariantUrl(item.handle, '42449850728598');
   return (
     <div
       className="product-link"
@@ -253,20 +306,20 @@ export function SingleItem({item}) {
       to={`/products/${item.handle}`}
     >
         
-                      <div className='slider-upper-block' style={{backgroundImage: 'url(' + ((item.images && Object.keys(item.images).length > 0) ? item.images[Object.keys(item.images)[0]] : "")  + ')', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                        <Image
-                          data={(item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "")}
-                          aspectRatio="1/1"
-                          style={{visibility: 'hidden'}}
-                          sizes="(min-width: 45em) 20vw, 50vw"
-                          />
-                      </div>
-                      <div className='slider-lower-block'>
-                        <h4>{item.title}</h4>
-                        <span className='price'>
-                          ${item.variants[Object.keys(item.variants)[0]].price}
-                        </span>
-                      </div>
+              <div className='slider-upper-block' style={{backgroundImage: 'url(' + ((item.images && Object.keys(item.images).length > 0) ? item.images[Object.keys(item.images)[0]] : "")  + ')', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+                <Image
+                  data={(item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "")}
+                  aspectRatio="1/1"
+                  style={{visibility: 'hidden'}}
+                  sizes="(min-width: 45em) 20vw, 50vw"
+                  />
+              </div>
+              <div className='slider-lower-block'>
+                <h4>{item.title}</h4>
+                <span className='price'>
+                  ${item.variants[Object.keys(item.variants)[0]].price}
+                </span>
+              </div>
         </Link>
         </div>
       {/* <div className='single-product'>
