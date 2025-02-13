@@ -66,6 +66,7 @@ export async function loader(args: LoaderFunctionArgs) {
   
   const {storefront, env} = args.context;
   const header_img = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`).then(r => r.json() );
+  const cms_styles = await fetch(`${args.context.env.BACKEND_URL}/get-css`).then(r => r.json() );
 
   return defer({
     ...deferredData,
@@ -80,6 +81,7 @@ export async function loader(args: LoaderFunctionArgs) {
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
     header_img: header_img,
+    cms_styles: cms_styles,
   });
 }
 
@@ -149,6 +151,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
     window.localStorage.setItem("bodyStyle", newStyle);
   }
 
+  let fonts_data = data.header_img.data.attributes.font_link;
+  fonts_data = fonts_data.split("\n");
+  console.log("fonts_data == ");
+
   return (
     <html lang="en">
       <head>
@@ -156,6 +162,30 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+
+        {
+          fonts_data.map(e => {
+            let el = e;
+            let f_type = 'preconnect'
+            if(el.search("stylesheet") != -1) {
+              f_type = 'stylesheet';
+            }
+
+            el = el.replace('<link ', "");
+            el = el.replace('rel="preconnect"', "");
+            el = el.replace('rel="stylesheet"', "");
+            el = el.replace('crossorigin', "");
+            el = el.replace('href="', "");
+            el = el.replace('" >', "");
+            el = el.replace('>', "");
+            el = el.replace('"', "");
+            return <link rel={f_type} href={el.trim()}></link>
+          })
+        }
+
+        {data.cms_styles.snippets?.map((s) => {
+            return <style dangerouslySetInnerHTML={{__html: s.code}} />
+          })}
       </head>
       <body className={bodyClass}>
         {data ? (

@@ -10,6 +10,7 @@ import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import { useSubmit } from "@remix-run/react";
+import axios from 'axios';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -22,13 +23,16 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
   const {handle} = args.params;
+  
+  const options = { timeout: 8000 };
+  const controller = new AbortController();
 
-  let filterOptions = await fetch('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true')
-  .then(r => r.json())
+  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
   .then(r => {
-    let products = r.products;
+    console.log("Rsposnsse:", r);
+    let products = r.data.products;
 
-    let filters = r.filter.options.filter(element => {
+    let filters = r.data.filter.options.filter(element => {
       if(['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
         return true;
       } else {
@@ -191,6 +195,7 @@ export default function Collection() {
   const [query] = useSearchParams();
 
   const enabledFilters = query.getAll('tags');
+  const priceFilter = query.get('max-price');
   const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
   // console.log("pdorudcts:");
   // console.log(products);
@@ -209,12 +214,112 @@ export default function Collection() {
 
   const submit = useSubmit();
 
+  /* range input */
+  // const rangeInput = document.querySelectorAll(".range-input input"),
+  // priceInput = document.querySelectorAll(".price-input input"),
+  // range = document.querySelector(".slider .progress");
+  // let priceGap = 1000;
+
+  // priceInput.forEach((input) => {
+  //   input.addEventListener("input", (e) => {
+  //     let minPrice = parseInt(priceInput[0].value),
+  //       maxPrice = parseInt(priceInput[1].value);
+
+  //     if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
+  //       if (e.target.className === "input-min") {
+  //         rangeInput[0].value = minPrice;
+  //         range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
+  //       } else {
+  //         rangeInput[1].value = maxPrice;
+  //         range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+  //       }
+  //     }
+  //   });
+  // });
+
+  /* end range input */
+
+  let priceInputChange = function (e) {
+    const priceInput = document.querySelectorAll(".price-input input");
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const range = document.querySelector(".slider .progress");
+    let priceGap = 100;
+    let minPrice = parseInt(priceInput[0].value);
+    //let maxPrice = parseInt(priceInput[1].value);
+
+    // if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
+    if (maxPrice <= rangeInput[1].max) {
+      if (e.target.className === "input-min") {
+        // rangeInput[0].value = minPrice;
+        // range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
+        range.style.left = (0 / rangeInput[0].max) * 100 + "%";
+      } else {
+        // rangeInput[1].value = maxPrice;
+        rangeInput[0].value = maxPrice;
+        range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+      }
+    }
+  }
+
+  let rangeChange = function (e) {
+    const priceInput = document.querySelectorAll(".price-input input");
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const range = document.querySelector(".slider .progress");
+    let priceGap = 100;
+    // let minPrice = parseInt(priceInput[0].value);
+    let maxPrice = parseInt(priceInput[0].value);
+    
+    // let minVal = parseInt(rangeInput[0].value);
+    let maxVal = parseInt(rangeInput[0].value);
+
+            
+    if (maxVal - 0 < 0) {
+      if (e.target.className === "range-min") {
+        rangeInput[0].value = maxVal - priceGap;
+      } else {
+        rangeInput[1].value = minVal + priceGap;
+      }
+    } else {
+      // priceInput[0].value = minVal;
+      priceInput[0].value = maxVal;
+      // range.style.left = (minVal / rangeInput[0].max) * 100 + "%";
+      range.style.right = 100 - (maxVal / rangeInput[0].max) * 100 + "%";
+    }
+  
+  }
+
+  const ShowElement = function(el, enabledFilters) {
+    let included = true;
+    if(enabledFilters.length) {
+      included = el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c =>
+        c.handle == collection.handle)
+      );
+    } else {
+      included = el.collections.some(c => c.handle == collection.handle);
+    }
+    
+    if(included) {
+      if(priceFilter) {
+        included = el.variants.some(val => {return parseFloat(val.price) <= parseFloat(priceFilter)});
+      }
+    }
+
+    return included;
+
+    // return enabledFilters.length ?
+    //           el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c =>
+    //               c.handle == collection.handle)
+    //             )
+    //           :
+    //           el.collections.some(c => c.handle == collection.handle);
+    //           ;
+  } 
+
   return (
     <div className="collection">
       <div className='left-side collection-filters'>
             
         <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
-            
             {
               filters.map((el) => {
                
@@ -225,6 +330,28 @@ export default function Collection() {
                 </>
               })
             }
+
+            <h2>Price</h2>
+            <section>
+              <div className="price-input">
+                {/* <div className="field">
+                  <span>Min</span>
+                  <input type="number" className="input-min" defaultValue="2500" onInput={priceInputChange} />
+                </div>
+                <div className="separator">-</div> */}
+                <div className="field">
+                  <span>Max</span>
+                  <input type="number" className="input-max" defaultValue="500"  onInput={priceInputChange}/>
+                </div>
+              </div>
+              <div className="slider">
+                <div className="progress"></div>
+              </div>
+              <div className="range-input">
+                {/* <input type="range" className="range-min" min="0" max="10000" defaultValue="1500" step="100" onChange={rangeChange} /> */}
+                <input type="range" name="max-price" className="range-max" min="0" max="1500" defaultValue="500" step="10" onChange={rangeChange} />
+              </div>
+            </section>
 
         </form>
         {/* {Object.keys(allItems).length > 0 && allItems['submenu_1']?.length > 0 &&
@@ -264,11 +391,8 @@ export default function Collection() {
 
         <div className="collection-products">
           {products.map(el => {
-            return enabledFilters.length ?
-              el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle)) && <SingleItem item={el} />
-              :
-              <>{ el.collections.some(c => c.handle == collection.handle) && <SingleItem item={el} /> }</>
-              ;
+              return ShowElement(el, enabledFilters) && <SingleItem item={el} />
+
           })}
 
         </div>

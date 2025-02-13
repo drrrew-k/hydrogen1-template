@@ -21,11 +21,17 @@ export async function loader(args: LoaderFunctionArgs) {
   const criticalData = await loadCriticalData(args);
 
   const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
+  
+  //rebuy: https://rebuyengine.com/api/v1/products/recommended?key=dafd5187be5b5ada05f761e64d42fe082068912b&format=pretty
+  const recommendedProducts = await fetch(`https://rebuyengine.com/api/v1/products/recommended?key=${args.context.env.REBUY_KEY}&format=pretty`)
+  
   console.log("store settings: ");
   console.log(store_settings);
 
   return defer({...deferredData, ...criticalData, store_settings: await store_settings.json(),
-    backend_url: args.context.env.CMS_API_URL,});
+    backend_url: args.context.env.CMS_API_URL,
+    recommendedProducts: await recommendedProducts.json(),
+  });
 }
 
 /**
@@ -130,19 +136,46 @@ function FeaturedCollection({
   collection: FeaturedCollectionFragment;
 }) {
   if (!collection) return null;
+
   const image = collection?.image;
   return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1>{collection.title}</h1>
-    </Link>
+    <div>
+      <Link
+        className="featured-collection"
+        to={`/collections/${collection.handle}`}
+      >
+        <h2>{collection.title}</h2>
+        
+        {image && (
+          <div className="featured-collection-image" style={{aspectRatio: "unset"}}>
+            <Image data={image} sizes="100vw" />
+          </div>
+        )}
+      </Link>
+
+      <div className="recommended-products-grid">
+        {collection.products.nodes.map(product => {
+          return <Link
+                  key={product.id}
+                  className="recommended-product"
+                  to={`/products/${product.handle}`}
+                >
+                  <Image
+                    data={{url: `${product.images.nodes[0].url}`}}
+                    aspectRatio="1/1"
+                    sizes="(min-width: 45em) 20vw, 50vw"
+                  />
+                  <h4>{product.title}</h4>
+                  <small>
+                    <Money data={{
+                        amount: `${product.priceRange.minVariantPrice.amount}`,
+                        currencyCode: "CAD"
+                      }} />
+                  </small>
+                </Link>
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -264,6 +297,7 @@ function RecommendedProducts({
 }: {
   products: Promise<RecommendedProductsQuery | null>;
 }) {
+  console.log('Prods:', products);
   return (
     <div className="recommended-products">
       <h2>For you</h2>
@@ -272,20 +306,23 @@ function RecommendedProducts({
           {(response) => (
             <div className="recommended-products-grid">
               {response
-                ? response.products.nodes.map((product) => (
+                ? response.data.map((product) => (
                     <Link
                       key={product.id}
                       className="recommended-product"
                       to={`/products/${product.handle}`}
                     >
                       <Image
-                        data={product.images.nodes[0]}
+                        data={{url: `${product.image.src}`}}
                         aspectRatio="1/1"
                         sizes="(min-width: 45em) 20vw, 50vw"
                       />
                       <h4>{product.title}</h4>
                       <small>
-                        <Money data={product.priceRange.minVariantPrice} />
+                        <Money data={{
+                            amount: `${product.variants[0].price}`,
+                            currencyCode: "CAD"
+                          }} />
                       </small>
                     </Link>
                   ))
@@ -311,10 +348,32 @@ const FEATURED_COLLECTION_QUERY = `#graphql
       height
     }
     handle
+    products(first: 5) {
+      nodes {
+        id
+        title
+        handle
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        images(first: 1) {
+          nodes {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
   }
   query FeaturedCollection($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
+    collections(first: 1) {
       nodes {
         ...FeaturedCollection
       }

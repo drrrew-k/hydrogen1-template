@@ -4,9 +4,12 @@ node_modules
 /dist
 /public/build
 /.mf
+/.vscode
 .env
 .env.*
 .shopify
 
 # Local Netlify folder
 .netlify
+
+debug.log
