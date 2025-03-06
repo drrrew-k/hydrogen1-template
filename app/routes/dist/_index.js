@@ -127,14 +127,15 @@ function loadDeferredData(_a) {
 }
 function Homepage() {
     var data = react_1.useLoaderData();
+    var backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
     return (React.createElement("div", { className: "home" },
-        React.createElement(HeroImage, { key: "hero1", title: "Outfitting teams in quality scrubs and uniforms since 1983", buttons: ['shop men', 'shop women'] }),
+        React.createElement(HeroImage, { imgsrc: (backend_url + data.store_settings.data.attributes.hero_image_top.data.attributes.url), key: "hero1", title: "Outfitting teams in quality scrubs and uniforms since 1983", buttons: ['shop men', 'shop women'] }),
         React.createElement(FeaturedCollection, { collection: data.featuredCollection }),
         React.createElement(CategoryRow, { products: data.recommendedProducts, store_settings: data.store_settings, url: data.backend_url }),
         React.createElement(RecommendedProducts, { products: data.recommendedProducts }),
-        React.createElement(HeroImage, { key: "hero2", title: "Looking to outfit your team?", buttons: ['Get a quote'] }),
+        React.createElement(HeroImage, { imgsrc: (backend_url + data.store_settings.data.attributes.hero_image_middle.data.attributes.url), key: "hero2", title: "Looking to outfit your team?", buttons: ['Get a quote'] }),
         React.createElement(TextTilesRow, null),
-        React.createElement(HeroImage, { key: "hero3", title: "Let our team help your team" })));
+        React.createElement(HeroImage, { imgsrc: (backend_url + data.store_settings.data.attributes.hero_image_bottom.data.attributes.url), key: "hero3", title: "Let our team help your team" })));
 }
 exports["default"] = Homepage;
 function TextTilesRow() {

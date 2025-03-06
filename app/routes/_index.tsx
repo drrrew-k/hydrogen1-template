@@ -23,7 +23,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
   
   //rebuy: https://rebuyengine.com/api/v1/products/recommended?key=dafd5187be5b5ada05f761e64d42fe082068912b&format=pretty
-  const recommendedProducts = await fetch(`https://rebuyengine.com/api/v1/products/recommended?key=${args.context.env.REBUY_KEY}&format=pretty`)
+  const recommendedProducts = await fetch(`https://rebuyengine.com/api/v1/products/recommended?key=${args.context.env.REBUY_KEY}&format=pretty`);
   
   console.log("store settings: ");
   console.log(store_settings);
@@ -70,15 +70,17 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  const backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
+
   return (
     <div className="home">
-      <HeroImage key="hero1" title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
+      <HeroImage imgsrc={(backend_url + data.store_settings.data.attributes.hero_image_top.data.attributes.url)} key="hero1" title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
       <FeaturedCollection collection={data.featuredCollection} />
       <CategoryRow products={data.recommendedProducts} store_settings={data.store_settings} url={data.backend_url} />
       <RecommendedProducts products={data.recommendedProducts} />
-      <HeroImage key="hero2" title="Looking to outfit your team?" buttons={['Get a quote']} />
+      <HeroImage imgsrc={(backend_url + data.store_settings.data.attributes.hero_image_middle.data.attributes.url)} key="hero2" title="Looking to outfit your team?" buttons={['Get a quote']} />
       <TextTilesRow />
-      <HeroImage key="hero3" title="Let our team help your team" />
+      <HeroImage imgsrc={(backend_url + data.store_settings.data.attributes.hero_image_bottom.data.attributes.url)} key="hero3" title="Let our team help your team" />
     </div>
   );
 }

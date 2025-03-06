@@ -54,6 +54,7 @@ var hydrogen_1 = require("@shopify/hydrogen");
 var variants_1 = require("~/lib/variants");
 var react_2 = require("@remix-run/react");
 var axios_1 = require("axios");
+var react_3 = require("react");
 exports.meta = function (_a) {
     var _b;
     var data = _a.data;
@@ -331,8 +332,12 @@ function Collection() {
         //           el.collections.some(c => c.handle == collection.handle);
         //           ;
     };
+    var _b = react_3.useState(false), openFilters = _b[0], setOpenFilters = _b[1];
+    function toggleFilters(event) {
+        setOpenFilters(!openFilters);
+    }
     return (React.createElement("div", { className: "collection" },
-        React.createElement("div", { className: 'left-side collection-filters' },
+        React.createElement("div", { className: 'left-side collection-filters ' + (openFilters ? 'active' : '') },
             React.createElement("form", { method: 'get', action: "/collections/" + handle + "?search", id: "filters-form", onChange: function (e) { return submit(e.currentTarget); } },
                 filters.map(function (el) {
                     return React.createElement(React.Fragment, null,
@@ -351,9 +356,11 @@ function Collection() {
                     React.createElement("div", { className: "slider" },
                         React.createElement("div", { className: "progress" })),
                     React.createElement("div", { className: "range-input" },
-                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: "0", max: "1500", defaultValue: "500", step: "10", onChange: rangeChange }))))),
+                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: "0", max: "1500", defaultValue: "500", step: "10", onChange: rangeChange }))),
+                React.createElement("input", { type: "submit", className: 'apply-filters', onClick: function (e) { return toggleFilters(e); }, value: "Apply" }))),
         React.createElement("div", { className: "collection-data" },
             React.createElement("section", { className: "collection-intro" },
+                React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } }, "Open filters"),
                 React.createElement("div", { className: 'right-side' },
                     collection.image &&
                         React.createElement("div", { className: "collection-img", style: { backgroundImage: 'url(' + collection.image.url + ')' } },

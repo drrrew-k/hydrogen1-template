@@ -11,6 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import { useSubmit } from "@remix-run/react";
 import axios from 'axios';
+import { useState, useLayoutEffect, useEffect } from 'react';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -315,9 +316,14 @@ export default function Collection() {
     //           ;
   } 
 
+  const [openFilters, setOpenFilters] = useState(false);
+  function toggleFilters(event: React.MouseEvent<HTMLDivElement>) {
+    setOpenFilters(!openFilters);
+  }
+
   return (
     <div className="collection">
-      <div className='left-side collection-filters'>
+      <div className={'left-side collection-filters ' +( openFilters ? 'active' : '')}>
             
         <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
             {
@@ -353,6 +359,7 @@ export default function Collection() {
               </div>
             </section>
 
+            <input type="submit" className='apply-filters' onClick={e => toggleFilters(e)} value="Apply" />
         </form>
         {/* {Object.keys(allItems).length > 0 && allItems['submenu_1']?.length > 0 &&
           <section className="collection-sub-menu">
@@ -369,11 +376,15 @@ export default function Collection() {
             })}
           </section>
         } */}
+
       </div>
 
       <div className="collection-data">
 
         <section className="collection-intro">
+          <p className="open-filters" onClick={e => toggleFilters(e)}>
+            Open filters
+          </p>
 
           <div className='right-side'>
             {collection.image && 
