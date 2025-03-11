@@ -63,6 +63,7 @@ exports.meta = function (_a) {
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
         var deferredData, criticalData, handle, options, controller, filterOptions, products, filteredVals, filters;
+        var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -73,30 +74,48 @@ function loader(args) {
                     handle = args.params.handle;
                     options = { timeout: 8000 };
                     controller = new AbortController();
-                    return [4 /*yield*/, axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
-                            .then(function (r) {
-                            console.log("Rsposnsse:", r);
-                            var products = r.data.products;
-                            var filters = r.data.filter.options.filter(function (element) {
-                                if (['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
-                                    return true;
+                    return [4 /*yield*/, axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(function (collection_response) { return __awaiter(_this, void 0, void 0, function () {
+                            var collectionId, filterOptions;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        console.log("The response", collection_response.data.collections[0].id);
+                                        collectionId = collection_response.data.collections[0].id;
+                                        //collection_scope=5882937350 (collection id)
+                                        // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
+                                        // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
+                                        // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
+                                        console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
+                                        return [4 /*yield*/, axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId, { timeout: 10000 })
+                                                .then(function (r) {
+                                                console.log("Rsposnsse:", r);
+                                                var products = r.data.products;
+                                                var filters = r.data.filter.options.filter(function (element) {
+                                                    if (['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
+                                                        return true;
+                                                    }
+                                                    else {
+                                                        return false;
+                                                    }
+                                                    // return Object.keys(element).includes('label') && element.label != '';
+                                                    // return Object.keys(element).includes('label') && element.label != '';
+                                                });
+                                                return { products: products, filters: filters };
+                                            }).then(function (e) {
+                                                e.filters.map(function (el) {
+                                                    if (Object.keys(el).includes('manuvalues') && el.manualValues) {
+                                                        return el.manualValues;
+                                                    }
+                                                    return el.values;
+                                                });
+                                                return e;
+                                            })];
+                                    case 1:
+                                        filterOptions = _a.sent();
+                                        return [2 /*return*/, filterOptions];
                                 }
-                                else {
-                                    return false;
-                                }
-                                // return Object.keys(element).includes('label') && element.label != '';
-                                // return Object.keys(element).includes('label') && element.label != '';
                             });
-                            return { products: products, filters: filters };
-                        }).then(function (e) {
-                            e.filters.map(function (el) {
-                                if (Object.keys(el).includes('manuvalues') && el.manualValues) {
-                                    return el.manualValues;
-                                }
-                                return el.values;
-                            });
-                            return e;
-                        })];
+                        }); })];
                 case 2:
                     filterOptions = _a.sent();
                     products = filterOptions.products;
@@ -316,6 +335,12 @@ function Collection() {
             }); });
         }
         else {
+            console.log("Working");
+            console.log("Collection handle = " + collection.handle);
+            console.log(el.collections.map(function (el) {
+                console.log(el);
+            }));
+            console.log(el.collections.includes("Activewear"));
             included = el.collections.some(function (c) { return c.handle == collection.handle; });
         }
         if (included) {
@@ -371,18 +396,21 @@ function Collection() {
                             collection.title.toLowerCase()),
                         React.createElement("p", { className: "collection-description" }, collection.description)))),
             React.createElement("div", { className: "collection-products" }, products.map(function (el) {
-                return ShowElement(el, enabledFilters) && React.createElement(SingleItem, { item: el });
+                return ShowElement(el, enabledFilters) && React.createElement(SingleItem, { item: el, collections: el.collections });
             })))));
 }
 exports["default"] = Collection;
 function SingleItem(_a) {
-    var item = _a.item;
+    var item = _a.item, collections = _a.collections;
     return (React.createElement("div", { className: "product-link" },
         React.createElement("div", null,
             React.createElement("div", { className: 'slider-item single-item', key: item.id },
                 React.createElement(react_1.Link, { className: "product-link", key: item.id, prefetch: "intent", to: "/products/" + item.handle },
                     React.createElement("div", { className: 'slider-upper-block', style: { backgroundImage: 'url(' + ((item.images && Object.keys(item.images).length > 0) ? item.images[Object.keys(item.images)[0]] : "") + ')', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' } },
-                        React.createElement(hydrogen_1.Image, { data: (item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : ""), aspectRatio: "1/1", style: { visibility: 'hidden' }, sizes: "(min-width: 45em) 20vw, 50vw" })),
+                        React.createElement(hydrogen_1.Image, { data: (item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : ""), aspectRatio: "1/1", style: { visibility: 'hidden' }, sizes: "(min-width: 45em) 20vw, 50vw" }),
+                        collections.map(function (el) {
+                            el.handle + "|";
+                        })),
                     React.createElement("div", { className: 'slider-lower-block' },
                         React.createElement("h4", null, item.title),
                         React.createElement("span", { className: 'price' },

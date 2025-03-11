@@ -28,7 +28,18 @@ export async function loader(args: LoaderFunctionArgs) {
   const options = { timeout: 8000 };
   const controller = new AbortController();
 
-  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
+
+
+  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
+    console.log("The response", collection_response.data.collections[0].id);
+    const collectionId = collection_response.data.collections[0].id;
+
+  //collection_scope=5882937350 (collection id)
+  // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
+  // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
+  // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
+  console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
+  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId, { timeout: 10000 })
   .then(r => {
     console.log("Rsposnsse:", r);
     let products = r.data.products;
@@ -57,6 +68,41 @@ export async function loader(args: LoaderFunctionArgs) {
 
     return e;
   });
+
+  return filterOptions;
+});
+
+
+  // //collection_scope=5882937350 (collection id)
+  // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
+  // .then(r => {
+  //   console.log("Rsposnsse:", r);
+  //   let products = r.data.products;
+
+  //   let filters = r.data.filter.options.filter(element => {
+  //     if(['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //     // return Object.keys(element).includes('label') && element.label != '';
+  //     // return Object.keys(element).includes('label') && element.label != '';
+  //   });
+
+
+  //   return {products: products, filters: filters }
+
+  // }).then(e => {
+    
+  //   e.filters.map(el => {
+  //       if(Object.keys(el).includes('manuvalues') && el.manualValues) {
+  //         return el.manualValues;
+  //       }
+  //       return el.values;
+  //     });
+
+  //   return e;
+  // });
 
   const products = filterOptions.products;
   var filteredVals = [];
@@ -296,6 +342,12 @@ export default function Collection() {
         c.handle == collection.handle)
       );
     } else {
+      console.log("Working");
+      console.log("Collection handle = " + collection.handle);
+      console.log(el.collections.map(el => {
+        console.log(el);
+      }));
+      console.log(el.collections.includes("Activewear"));
       included = el.collections.some(c => c.handle == collection.handle);
     }
     
@@ -402,7 +454,7 @@ export default function Collection() {
 
         <div className="collection-products">
           {products.map(el => {
-              return ShowElement(el, enabledFilters) && <SingleItem item={el} />
+              return ShowElement(el, enabledFilters) && <SingleItem item={el} collections={el.collections} />
 
           })}
 
@@ -427,7 +479,7 @@ export default function Collection() {
   );
 }
 
-export function SingleItem({item}) {
+export function SingleItem({item, collections}) {
   return (
     <div
       className="product-link"
@@ -448,6 +500,9 @@ export function SingleItem({item}) {
                   style={{visibility: 'hidden'}}
                   sizes="(min-width: 45em) 20vw, 50vw"
                   />
+                {collections.map(el => {
+                  el.handle + "|"
+                })}
               </div>
               <div className='slider-lower-block'>
                 <h4>{item.title}</h4>
