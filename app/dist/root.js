@@ -111,7 +111,7 @@ function loader(args) {
                             }), consent: {
                                 checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
                                 storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN
-                            }, header_img: header_img, cms_styles: cms_styles }))];
+                            }, header_img: header_img, cms_styles: cms_styles, store_name: args.context.env.STORE_NAME }))];
             }
         });
     });
@@ -215,7 +215,12 @@ function Layout(_a) {
                 return React.createElement("link", { rel: f_type, href: el.trim() });
             }), (_b = data.cms_styles.snippets) === null || _b === void 0 ? void 0 :
             _b.map(function (s) {
-                return React.createElement("style", { dangerouslySetInnerHTML: { __html: s.code } });
+                if (s.store_name == data.store_name || s.store_name == '') {
+                    return React.createElement("style", { dangerouslySetInnerHTML: { __html: s.code } });
+                }
+                else {
+                    return '';
+                }
             })),
         React.createElement("body", { className: bodyClass },
             data ? (React.createElement(hydrogen_1.Analytics.Provider, { cart: data.cart, shop: data.shop, consent: data.consent },

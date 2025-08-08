@@ -82,6 +82,7 @@ export async function loader(args: LoaderFunctionArgs) {
     },
     header_img: header_img,
     cms_styles: cms_styles,
+    store_name: args.context.env.STORE_NAME,
   });
 }
 
@@ -184,8 +185,12 @@ export function Layout({children}: {children?: React.ReactNode}) {
         }
 
         {data.cms_styles.snippets?.map((s) => {
-            return <style dangerouslySetInnerHTML={{__html: s.code}} />
-          })}
+            if(s.store_name == data.store_name || s.store_name == '') {
+              return <style dangerouslySetInnerHTML={{__html: s.code}} />
+            } else {
+              return '';
+            }
+        })}
       </head>
       <body className={bodyClass}>
         {data ? (
