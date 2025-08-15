@@ -17,6 +17,14 @@ export function Footer({
   header_img,
   publicStoreDomain,
 }: FooterProps) {
+
+  let footer_logo = '';
+  if(header_img.data.attributes.footer_logo.data == null) {
+    footer_logo = header_img.data.attributes.store_logo.data.attributes.url;
+  } else {
+    footer_logo = header_img.data.attributes.footer_logo.data.attributes.url;
+  }
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
@@ -36,7 +44,7 @@ export function Footer({
                     prefetch="intent"
                     to="/"
                     >
-                    <img srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
+                    <img srcx={"https://hydrogencms.drew-k.com:81" + footer_logo} src={"https://hydrogencms.drew-k.com:81" + footer_logo} />
                     
                   </Link>
                 </div>
