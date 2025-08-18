@@ -696,6 +696,12 @@ main .collection {
 }
 
 @media (max-width: 900px) {
+
+    button.header-menu-mobile-toggle {
+        font-size: 30px;
+        line-height: 0px;
+    }
+
     .product-info {
         width: 110%;
     }
