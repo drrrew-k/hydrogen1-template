@@ -31,7 +31,9 @@ function HeaderMenu(_a) {
                 item.url.includes(primaryDomainUrl)
                 ? new URL(item.url).pathname
                 : item.url;
-            return (React.createElement(react_2.NavLink, { className: "header-menu-item", end: true, key: item.id, onClick: close, prefetch: "intent", style: activeLinkStyle, to: url }, item.title));
+            return (React.createElement(react_2.NavLink, { className: "header-menu-item", end: true, key: item.id, onClick: close, prefetch: "intent", 
+                // style={activeLinkStyle}
+                to: url }, item.title));
         })));
 }
 exports.HeaderMenu = HeaderMenu;
