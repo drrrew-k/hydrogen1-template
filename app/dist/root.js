@@ -102,7 +102,6 @@ function loader(args) {
                     params = new URLSearchParams({
                         store_id: '4'
                     });
-                    console.log(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString());
                     return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString()).then(function (r) { return r.json(); })];
                 case 2:
                     header_img = _b.sent();

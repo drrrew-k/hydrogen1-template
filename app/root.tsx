@@ -68,7 +68,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const params = new URLSearchParams({
       store_id: '4',
   });
-  console.log(`${args.context.env.BACKEND_URL}/get-store1-settings?${params.toString()}`);
+  
   const header_img = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings?${params.toString()}`).then(r => r.json() );
   const cms_styles = await fetch(`${args.context.env.BACKEND_URL}/get-css`).then(r => r.json() );
 
