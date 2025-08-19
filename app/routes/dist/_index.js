@@ -131,7 +131,6 @@ function loadDeferredData(_a) {
 function Homepage() {
     var data = react_1.useLoaderData();
     var backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
-    console.log("gfhgf data: ", data.store_settings.data.attributes.hero_image_top);
     return (React.createElement("div", { className: "home" },
         React.createElement(HeroImage, { imgsrc: (backend_url + data.store_settings.data.attributes.hero_image_top.data.attributes.url), key: "hero1", title: "Outfitting teams in quality scrubs and uniforms since 1983", buttons: ['shop men', 'shop women'] }),
         React.createElement(FeaturedCollection, { collection: data.featuredCollection }),

@@ -75,8 +75,6 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   const backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
 
-  console.log("gfhgf data: ", data.store_settings.data.attributes.hero_image_top);
-
   return (
     <div className="home">
       <HeroImage imgsrc={(backend_url + data.store_settings.data.attributes.hero_image_top.data.attributes.url)} key="hero1" title = "Outfitting teams in quality scrubs and uniforms since 1983" buttons={['shop men', 'shop women']} />
