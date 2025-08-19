@@ -57,7 +57,7 @@ exports.meta = function () {
 };
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData, store_settings, recommendedProducts, _a, _b, _c;
+        var deferredData, criticalData, params, store_settings, recommendedProducts, _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -65,7 +65,10 @@ function loader(args) {
                     return [4 /*yield*/, loadCriticalData(args)];
                 case 1:
                     criticalData = _d.sent();
-                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings")];
+                    params = new URLSearchParams({
+                        store_id: '4'
+                    });
+                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString())];
                 case 2:
                     store_settings = _d.sent();
                     return [4 /*yield*/, fetch("https://rebuyengine.com/api/v1/products/recommended?key=" + args.context.env.REBUY_KEY + "&format=pretty")];
@@ -128,6 +131,7 @@ function loadDeferredData(_a) {
 function Homepage() {
     var data = react_1.useLoaderData();
     var backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
+    console.log("gfhgf data: ", data.store_settings.data.attributes.hero_image_top);
     return (React.createElement("div", { className: "home" },
         React.createElement(HeroImage, { imgsrc: (backend_url + data.store_settings.data.attributes.hero_image_top.data.attributes.url), key: "hero1", title: "Outfitting teams in quality scrubs and uniforms since 1983", buttons: ['shop men', 'shop women'] }),
         React.createElement(FeaturedCollection, { collection: data.featuredCollection }),

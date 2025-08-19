@@ -90,7 +90,7 @@ function links() {
 exports.links = links;
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData, _a, storefront, env, header_img, cms_styles;
+        var deferredData, criticalData, _a, storefront, env, params, header_img, cms_styles;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -99,7 +99,11 @@ function loader(args) {
                 case 1:
                     criticalData = _b.sent();
                     _a = args.context, storefront = _a.storefront, env = _a.env;
-                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings").then(function (r) { return r.json(); })];
+                    params = new URLSearchParams({
+                        store_id: '4'
+                    });
+                    console.log(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString());
+                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString()).then(function (r) { return r.json(); })];
                 case 2:
                     header_img = _b.sent();
                     return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-css").then(function (r) { return r.json(); })];

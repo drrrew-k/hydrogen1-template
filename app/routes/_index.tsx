@@ -20,7 +20,10 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
+  const params = new URLSearchParams({
+    store_id: '4',
+  });
+  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings?${params.toString()}`); //.then(r => r.json().then(data => {console.log("Data returned!"); return data;}) ).catch(err => {console.log("ERR!", err)});
   
   //rebuy: https://rebuyengine.com/api/v1/products/recommended?key=dafd5187be5b5ada05f761e64d42fe082068912b&format=pretty
   const recommendedProducts = await fetch(`https://rebuyengine.com/api/v1/products/recommended?key=${args.context.env.REBUY_KEY}&format=pretty`);
@@ -71,6 +74,8 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   const backend_url = data.backend_url.endsWith("/") ? data.backend_url.replace(/\/$/, "") : data.backend_url;
+
+  console.log("gfhgf data: ", data.store_settings.data.attributes.hero_image_top);
 
   return (
     <div className="home">
