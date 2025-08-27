@@ -695,6 +695,23 @@ main .collection {
     height: 63px;
 }
 
+.bold {
+    font-weight: 800;
+}
+
+.product-options {
+    margin-bottom: 10px;
+}
+
+.btn_addtocart {
+    width: 150px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    background-color: #fff;
+    cursor: pointer;
+}
+
 @media (max-width: 900px) {
 
     button.header-menu-mobile-toggle {

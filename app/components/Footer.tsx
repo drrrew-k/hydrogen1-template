@@ -77,6 +77,10 @@ function FooterMenu({
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
+
+        console.log("ITEM.URL:", item.url);
+        console.log(item.url.includes(primaryDomainUrl) ? "Y" : "N");
+
         const url =
           item.url.includes('myshopify.com') ||
           item.url.includes(publicStoreDomain) ||
