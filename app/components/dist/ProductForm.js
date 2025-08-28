@@ -12,6 +12,12 @@ function ProductForm(_a) {
     var navigate = react_2.useNavigate();
     var _b = react_1.useState(1), countItems = _b[0], setCountItems = _b[1];
     //VariantSelector: https://shopify.dev/docs/storefronts/headless/hydrogen/cart/variant-selector
+    var removeItem = function () {
+        setCountItems(countItems - 1);
+    };
+    var addItem = function () {
+        setCountItems(countItems + 1);
+    };
     return (React.createElement(React.Fragment, null,
         React.createElement("div", { className: "product-form" },
             React.createElement(hydrogen_1.VariantSelector, { handle: product.handle, options: product.options.filter(function (option) { return option.values.length > 1; }), variants: variants }, function (_a) {
@@ -33,18 +39,12 @@ function ProductForm(_a) {
                 React.createElement("p", null,
                     React.createElement("strong", null, "Quantity")),
                 React.createElement("div", { className: "product-options-grid" },
-                    React.createElement("div", { className: "dropdown-wrapper" },
-                        React.createElement("select", { className: "dropdown custom count-dropdown", onChange: (function (e) { setCountItems(parseInt(e.target.value)); }) },
-                            React.createElement("option", { value: "1" }, "1"),
-                            React.createElement("option", { value: "2" }, "2"),
-                            React.createElement("option", { value: "3" }, "3"),
-                            React.createElement("option", { value: "4" }, "4"),
-                            React.createElement("option", { value: "5" }, "5"),
-                            React.createElement("option", { value: "6" }, "6"),
-                            React.createElement("option", { value: "7" }, "7"),
-                            React.createElement("option", { value: "8" }, "8"),
-                            React.createElement("option", { value: "9" }, "9"),
-                            React.createElement("option", { value: "10" }, "10"))))),
+                    React.createElement("div", { className: "count-input-wrapper" },
+                        React.createElement("div", { className: 'btn-count q-remove', onClick: function (e) { removeItem(); } },
+                            React.createElement("p", null, "-")),
+                        React.createElement("input", { type: "text", className: "custom count-input", value: countItems, onChange: (function (e) { setCountItems(parseInt(e.target.value)); }) }),
+                        React.createElement("div", { className: 'btn-count q-add', onClick: function (e) { addItem(); } },
+                            React.createElement("p", null, "+"))))),
             React.createElement(AddToCartButton_1.AddToCartButton, { className: "btn_addtocart", disabled: !selectedVariant || !selectedVariant.availableForSale, onClick: function () {
                     open('cart');
                 }, lines: selectedVariant

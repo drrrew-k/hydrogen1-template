@@ -28,8 +28,8 @@ export async function loader(args: LoaderFunctionArgs) {
   //rebuy: https://rebuyengine.com/api/v1/products/recommended?key=dafd5187be5b5ada05f761e64d42fe082068912b&format=pretty
   const recommendedProducts = await fetch(`https://rebuyengine.com/api/v1/products/recommended?key=${args.context.env.REBUY_KEY}&format=pretty`);
   
-  console.log("store settings: ");
-  console.log(store_settings);
+  // console.log("store settings: ");
+  // console.log(store_settings);
 
   return defer({...deferredData, ...criticalData, store_settings: await store_settings.json(),
     backend_url: args.context.env.CMS_API_URL,
@@ -302,7 +302,7 @@ function RecommendedProducts({
 }: {
   products: Promise<RecommendedProductsQuery | null>;
 }) {
-  console.log('Prods:', products);
+
   return (
     <div className="recommended-products">
       <h2>For you</h2>

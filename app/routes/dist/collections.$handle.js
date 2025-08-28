@@ -79,16 +79,10 @@ function loader(args) {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        console.log("The response", collection_response.data.collections[0].id);
                                         collectionId = collection_response.data.collections[0].id;
-                                        //collection_scope=5882937350 (collection id)
-                                        // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
-                                        // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
-                                        // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
-                                        console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
                                         return [4 /*yield*/, axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId, { timeout: 10000 })
                                                 .then(function (r) {
-                                                console.log("Rsposnsse:", r);
+                                                // console.log("Rsposnsse:", r);
                                                 var products = r.data.products;
                                                 var filters = r.data.filter.options.filter(function (element) {
                                                     if (['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
@@ -335,12 +329,12 @@ function Collection() {
             }); });
         }
         else {
-            console.log("Working");
-            console.log("Collection handle = " + collection.handle);
-            console.log(el.collections.map(function (el) {
-                console.log(el);
-            }));
-            console.log(el.collections.includes("Activewear"));
+            // console.log("Working");
+            // console.log("Collection handle = " + collection.handle);
+            // console.log(el.collections.map(el => {
+            //   console.log(el);
+            // }));
+            // console.log(el.collections.includes("Activewear"));
             included = el.collections.some(function (c) { return c.handle == collection.handle; });
         }
         if (included) {

@@ -704,12 +704,51 @@ main .collection {
 }
 
 .btn_addtocart {
-    width: 150px;
-    height: 30px;
+    width: 164px;
+    height: 36px;
     border-radius: 5px;
     border: 1px solid #000;
     background-color: #fff;
     cursor: pointer;
+}
+
+.count-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-count {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    margin-top: 0.25rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-count p {
+    font-size: 25px;
+    display: inline-block;
+    height: 38px;
+}
+
+.q-remove {
+    margin-right: 5px;
+}
+
+.q-add {
+    margin-left: 5px;
+}
+
+.count-input {
+    width: 62px;
+    text-align: center;
 }
 
 @media (max-width: 900px) {

@@ -40,8 +40,6 @@ function FooterMenu(_a) {
         if (!item.url)
             return null;
         // if the url is internal, we strip the domain
-        console.log("ITEM.URL:", item.url);
-        console.log(item.url.includes(primaryDomainUrl) ? "Y" : "N");
         var url = item.url.includes('myshopify.com') ||
             item.url.includes(publicStoreDomain) ||
             item.url.includes(primaryDomainUrl)

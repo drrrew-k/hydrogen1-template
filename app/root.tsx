@@ -158,7 +158,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
 
   let fonts_data = data.header_img.data.attributes.font_link;
   fonts_data = fonts_data.split("\n");
-  console.log("fonts_data == ");
 
   return (
     <html lang="en">

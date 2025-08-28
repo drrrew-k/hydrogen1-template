@@ -194,7 +194,6 @@ function Layout(_a) {
     }
     var fonts_data = data.header_img.data.attributes.font_link;
     fonts_data = fonts_data.split("\n");
-    console.log("fonts_data == ");
     return (React.createElement("html", { lang: "en" },
         React.createElement("head", null,
             React.createElement("meta", { charSet: "utf-8" }),

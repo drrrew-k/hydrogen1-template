@@ -12,9 +12,6 @@ export function ProductImage({
     return <div className="product-image" />;
   }
 
-  console.log("IMMMAG");
-  console.log(image);
-
   return (
     <div className="product-image">
       <Zoom>

@@ -28,6 +28,14 @@ export function ProductForm({
 
   //VariantSelector: https://shopify.dev/docs/storefronts/headless/hydrogen/cart/variant-selector
 
+  const removeItem = () => {
+    setCountItems(countItems - 1);
+  }
+
+  const addItem = () => {
+    setCountItems(countItems + 1);
+  }
+
   return (
     <>
 
@@ -81,8 +89,15 @@ export function ProductForm({
         <div className="product-options">
             <p><strong>Quantity</strong></p>
             <div className="product-options-grid">
-              <div className="dropdown-wrapper">
-                <select className="dropdown custom count-dropdown" onChange={((e) => { setCountItems(parseInt(e.target.value)); })}>
+
+              <div className="count-input-wrapper">
+                <div className='btn-count q-remove' onClick={(e) => { removeItem(); }}><p>-</p></div>
+                <input type="text"
+                  className="custom count-input"
+                  value={countItems}
+                  onChange={((e) => { setCountItems(parseInt(e.target.value)); })} />
+
+                {/* <select className="dropdown custom count-dropdown" onChange={((e) => { setCountItems(parseInt(e.target.value)); })}>
                   
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -95,7 +110,8 @@ export function ProductForm({
                       <option value="9">9</option>
                       <option value="10">10</option>
                   
-                </select>
+                </select> */}
+                <div className='btn-count q-add' onClick={(e) => { addItem(); }}><p>+</p></div>
               </div>
 
             </div>

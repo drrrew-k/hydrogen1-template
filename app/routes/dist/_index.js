@@ -74,8 +74,6 @@ function loader(args) {
                     return [4 /*yield*/, fetch("https://rebuyengine.com/api/v1/products/recommended?key=" + args.context.env.REBUY_KEY + "&format=pretty")];
                 case 3:
                     recommendedProducts = _d.sent();
-                    console.log("store settings: ");
-                    console.log(store_settings);
                     _a = remix_runtime_1.defer;
                     _b = [__assign(__assign({}, deferredData), criticalData)];
                     _c = {};
@@ -83,7 +81,10 @@ function loader(args) {
                 case 4:
                     _c.store_settings = _d.sent(), _c.backend_url = args.context.env.CMS_API_URL;
                     return [4 /*yield*/, recommendedProducts.json()];
-                case 5: return [2 /*return*/, _a.apply(void 0, [__assign.apply(void 0, _b.concat([(_c.recommendedProducts = _d.sent(), _c)]))])];
+                case 5: 
+                // console.log("store settings: ");
+                // console.log(store_settings);
+                return [2 /*return*/, _a.apply(void 0, [__assign.apply(void 0, _b.concat([(_c.recommendedProducts = _d.sent(), _c)]))])];
             }
         });
     });
@@ -226,7 +227,6 @@ function HeroImage(_a) {
 }
 function RecommendedProducts(_a) {
     var products = _a.products;
-    console.log('Prods:', products);
     return (React.createElement("div", { className: "recommended-products" },
         React.createElement("h2", null, "For you"),
         React.createElement(react_2.Suspense, { fallback: React.createElement("div", null, "Loading...") },

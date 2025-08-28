@@ -31,17 +31,17 @@ export async function loader(args: LoaderFunctionArgs) {
 
 
   let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
-    console.log("The response", collection_response.data.collections[0].id);
+    // console.log("The response", collection_response.data.collections[0].id);
     const collectionId = collection_response.data.collections[0].id;
 
   //collection_scope=5882937350 (collection id)
   // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
   // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
   // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
-  console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
+  // console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
   let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId, { timeout: 10000 })
   .then(r => {
-    console.log("Rsposnsse:", r);
+    // console.log("Rsposnsse:", r);
     let products = r.data.products;
 
     let filters = r.data.filter.options.filter(element => {
@@ -342,12 +342,12 @@ export default function Collection() {
         c.handle == collection.handle)
       );
     } else {
-      console.log("Working");
-      console.log("Collection handle = " + collection.handle);
-      console.log(el.collections.map(el => {
-        console.log(el);
-      }));
-      console.log(el.collections.includes("Activewear"));
+      // console.log("Working");
+      // console.log("Collection handle = " + collection.handle);
+      // console.log(el.collections.map(el => {
+      //   console.log(el);
+      // }));
+      // console.log(el.collections.includes("Activewear"));
       included = el.collections.some(c => c.handle == collection.handle);
     }
     
