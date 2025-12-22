@@ -6,11 +6,11 @@ var react_2 = require("@remix-run/react");
 var hydrogen_1 = require("@shopify/hydrogen");
 var Aside_1 = require("~/components/Aside");
 function Header(_a) {
-    var header = _a.header, isLoggedIn = _a.isLoggedIn, cart = _a.cart, publicStoreDomain = _a.publicStoreDomain;
+    var header = _a.header, header_img = _a.header_img, isLoggedIn = _a.isLoggedIn, cart = _a.cart, publicStoreDomain = _a.publicStoreDomain;
     var shop = header.shop, menu = header.menu;
     return (React.createElement("header", { className: "header" },
         React.createElement(react_2.NavLink, { prefetch: "intent", to: "/", style: activeLinkStyle, end: true },
-            React.createElement("strong", null, shop.name)),
+            React.createElement("img", { className: "header-logo", srcx: "https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url, src: "https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url })),
         React.createElement(HeaderMenu, { menu: menu, viewport: "desktop", primaryDomainUrl: header.shop.primaryDomain.url, publicStoreDomain: publicStoreDomain }),
         React.createElement(HeaderCtas, { isLoggedIn: isLoggedIn, cart: cart })));
 }

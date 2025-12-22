@@ -47,6 +47,7 @@ aside header .close {
   opacity: 0.8;
   text-decoration: none;
   transition: all 200ms;
+  font-size: 27px;
   width: 20px;
 }
 

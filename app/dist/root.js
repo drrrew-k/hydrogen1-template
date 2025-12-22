@@ -90,24 +90,25 @@ function links() {
 exports.links = links;
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData, _a, storefront, env, params, header_img, cms_styles;
+        var deferredData, _a, storefront, env, params, header_img, cms_styles, menuHandle, criticalData;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     deferredData = loadDeferredData(args);
-                    return [4 /*yield*/, loadCriticalData(args)];
-                case 1:
-                    criticalData = _b.sent();
                     _a = args.context, storefront = _a.storefront, env = _a.env;
                     params = new URLSearchParams({
                         store_id: '4'
                     });
                     return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings?" + params.toString()).then(function (r) { return r.json(); })];
-                case 2:
+                case 1:
                     header_img = _b.sent();
                     return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-css").then(function (r) { return r.json(); })];
-                case 3:
+                case 2:
                     cms_styles = _b.sent();
+                    menuHandle = header_img.data.attributes.MenuHandleId || 'main-menu';
+                    return [4 /*yield*/, loadCriticalData(args, menuHandle)];
+                case 3:
+                    criticalData = _b.sent();
                     return [2 /*return*/, remix_runtime_1.defer(__assign(__assign(__assign({}, deferredData), criticalData), { publicStoreDomain: env.PUBLIC_STORE_DOMAIN, shop: hydrogen_1.getShopAnalytics({
                                 storefront: storefront,
                                 publicStorefrontId: env.PUBLIC_STOREFRONT_ID
@@ -124,7 +125,7 @@ exports.loader = loader;
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
-function loadCriticalData(_a) {
+function loadCriticalData(_a, menuHandle) {
     var context = _a.context;
     return __awaiter(this, void 0, void 0, function () {
         var storefront, header;
@@ -136,7 +137,7 @@ function loadCriticalData(_a) {
                             storefront.query(fragments_1.HEADER_QUERY, {
                                 cache: storefront.CacheLong(),
                                 variables: {
-                                    headerMenuHandle: 'main-menu'
+                                    headerMenuHandle: menuHandle
                                 }
                             }),
                         ])];

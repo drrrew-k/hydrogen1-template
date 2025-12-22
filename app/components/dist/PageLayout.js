@@ -15,7 +15,7 @@ function PageLayout(_a) {
         React.createElement(CartAside, { cart: cart }),
         React.createElement(SearchAside, null),
         React.createElement(MobileMenuAside, { header: header, publicStoreDomain: publicStoreDomain }),
-        header && (React.createElement(Header_1.Header, { header: header, cart: cart, isLoggedIn: isLoggedIn, publicStoreDomain: publicStoreDomain })),
+        header && (React.createElement(Header_1.Header, { header: header, header_img: header_img, cart: cart, isLoggedIn: isLoggedIn, publicStoreDomain: publicStoreDomain })),
         React.createElement("main", null, children),
         React.createElement(Footer_1.Footer, { footer: footer, header: header, header_img: header_img, publicStoreDomain: publicStoreDomain })));
 }

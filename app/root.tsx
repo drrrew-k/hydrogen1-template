@@ -62,16 +62,19 @@ export async function loader(args: LoaderFunctionArgs) {
   const deferredData = loadDeferredData(args);
 
   // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
   
   const {storefront, env} = args.context;
   const params = new URLSearchParams({
-      store_id: '4',
+    store_id: '4',
   });
   
   const header_img = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings?${params.toString()}`).then(r => r.json() );
   const cms_styles = await fetch(`${args.context.env.BACKEND_URL}/get-css`).then(r => r.json() );
 
+  const menuHandle = header_img.data.attributes.MenuHandleId || 'main-menu';
+
+  const criticalData = await loadCriticalData(args, menuHandle);
+  
   return defer({
     ...deferredData,
     ...criticalData,
@@ -94,14 +97,14 @@ export async function loader(args: LoaderFunctionArgs) {
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
-async function loadCriticalData({context}: LoaderFunctionArgs) {
+async function loadCriticalData({context}: LoaderFunctionArgs, menuHandle: string) {
   const {storefront} = context;
 
   const [header] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
+        headerMenuHandle: menuHandle, // Adjust to your header menu handle
       },
     }),
     // Add other queries here, so that they are loaded in parallel

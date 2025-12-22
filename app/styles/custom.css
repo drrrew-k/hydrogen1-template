@@ -80,6 +80,12 @@ body.body-light {
     justify-content: space-between;
 }
 
+.header-logo {
+    margin-left: auto;
+    margin-right: auto;
+    height: 63px;
+}
+
 .header-ctas {
     margin: initial;
 }

@@ -15,6 +15,7 @@ type Viewport = 'desktop' | 'mobile';
 
 export function Header({
   header,
+  header_img,
   isLoggedIn,
   cart,
   publicStoreDomain,
@@ -23,7 +24,7 @@ export function Header({
   return (
     <header className="header">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
+        <img className="header-logo" srcx={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} src={"https://hydrogencms.drew-k.com:81" + header_img.data.attributes.store_logo.data.attributes.url} />
       </NavLink>
       <HeaderMenu
         menu={menu}

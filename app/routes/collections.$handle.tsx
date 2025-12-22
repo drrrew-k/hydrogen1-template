@@ -293,7 +293,7 @@ export default function Collection() {
     const priceInput = document.querySelectorAll(".price-input input");
     const rangeInput = document.querySelectorAll(".range-input input");
     const range = document.querySelector(".slider .progress");
-    let priceGap = 10;
+    let priceGap = 1;
     let minPrice = parseInt(priceInput[0].value);
     //let maxPrice = parseInt(priceInput[1].value);
 
@@ -316,7 +316,7 @@ export default function Collection() {
     const priceInput = document.querySelectorAll(".price-input input");
     const rangeInput = document.querySelectorAll(".range-input input");
     const range = document.querySelector(".slider .progress");
-    let priceGap = 100;
+    let priceGap = 1;
     // let minPrice = parseInt(priceInput[0].value);
     let maxPrice = parseInt(priceInput[0].value);
     
@@ -418,7 +418,7 @@ export default function Collection() {
               </div>
               <div className="range-input">
                 {/* <input type="range" className="range-min" min="0" max="10000" defaultValue="1500" step="100" onChange={rangeChange} /> */}
-                <input type="range" name="max-price" className="range-max" min={minPrice} max={maxPrice} defaultValue={maxPrice / 2} step="5" onChange={rangeChange} />
+                <input type="range" name="max-price" className="range-max" min={minPrice} max={maxPrice} defaultValue={maxPrice} step="1" onChange={rangeChange} />
               </div>
             </section>
 

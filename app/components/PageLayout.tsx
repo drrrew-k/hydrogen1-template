@@ -41,6 +41,7 @@ export function PageLayout({
       {header && (
         <Header
           header={header}
+          header_img={header_img}
           cart={cart}
           isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}

@@ -283,7 +283,7 @@ function Collection() {
         var priceInput = document.querySelectorAll(".price-input input");
         var rangeInput = document.querySelectorAll(".range-input input");
         var range = document.querySelector(".slider .progress");
-        var priceGap = 10;
+        var priceGap = 1;
         var minPrice = parseInt(priceInput[0].value);
         //let maxPrice = parseInt(priceInput[1].value);
         // if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
@@ -304,7 +304,7 @@ function Collection() {
         var priceInput = document.querySelectorAll(".price-input input");
         var rangeInput = document.querySelectorAll(".range-input input");
         var range = document.querySelector(".slider .progress");
-        var priceGap = 100;
+        var priceGap = 1;
         // let minPrice = parseInt(priceInput[0].value);
         var maxPrice = parseInt(priceInput[0].value);
         // let minVal = parseInt(rangeInput[0].value);
@@ -383,7 +383,7 @@ function Collection() {
                     React.createElement("div", { className: "slider" },
                         React.createElement("div", { className: "progress" })),
                     React.createElement("div", { className: "range-input" },
-                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: minPrice, max: maxPrice, defaultValue: maxPrice / 2, step: "5", onChange: rangeChange }))),
+                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: minPrice, max: maxPrice, defaultValue: maxPrice, step: "1", onChange: rangeChange }))),
                 React.createElement("input", { type: "submit", className: 'apply-filters', onClick: function (e) { return toggleFilters(e); }, value: "Apply" }))),
         React.createElement("div", { className: "collection-data" },
             React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } },
