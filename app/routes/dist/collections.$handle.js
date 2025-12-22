@@ -244,10 +244,13 @@ function Collection() {
     var enabledFilters = query.getAll('tags');
     var priceFilter = query.get('max-price');
     var _a = react_1.useLoaderData(), collection = _a.collection, menu = _a.menu, allItems = _a.allItems, products = _a.products, filters = _a.filters, handle = _a.handle;
-    // console.log("pdorudcts:");
+    // console.log("products:");
     // console.log(products);
     // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
     var checkedStates = [];
+    var minPrice = Math.min.apply(Math, products.map(function (prod) { return prod.price_min; }));
+    var maxPrice = Math.max.apply(Math, products.map(function (prod) { return prod.price_min; }));
+    ;
     for (var i = 0; i < filters.length; i++) {
         checkedStates.push({ tag: filters[i], checked: false });
     }
@@ -280,22 +283,22 @@ function Collection() {
         var priceInput = document.querySelectorAll(".price-input input");
         var rangeInput = document.querySelectorAll(".range-input input");
         var range = document.querySelector(".slider .progress");
-        var priceGap = 100;
+        var priceGap = 10;
         var minPrice = parseInt(priceInput[0].value);
         //let maxPrice = parseInt(priceInput[1].value);
         // if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
-        if (maxPrice <= rangeInput[1].max) {
-            if (e.target.className === "input-min") {
-                // rangeInput[0].value = minPrice;
-                // range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
-                range.style.left = (0 / rangeInput[0].max) * 100 + "%";
-            }
-            else {
-                // rangeInput[1].value = maxPrice;
-                rangeInput[0].value = maxPrice;
-                range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-            }
-        }
+        // if (maxPrice <= rangeInput[1].max) {
+        //   if (e.target.className === "input-min") {
+        //     // rangeInput[0].value = minPrice;
+        //     // range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
+        //     range.style.left = (0 / rangeInput[0].max) * 100 + "%";
+        //   } else {
+        //     // rangeInput[1].value = maxPrice;
+        //     rangeInput[0].value = maxPrice;
+        //     range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+        //   }
+        // }
+        range.style.right = 0;
     };
     var rangeChange = function (e) {
         var priceInput = document.querySelectorAll(".price-input input");
@@ -318,8 +321,9 @@ function Collection() {
             // priceInput[0].value = minVal;
             priceInput[0].value = maxVal;
             // range.style.left = (minVal / rangeInput[0].max) * 100 + "%";
-            range.style.right = 100 - (maxVal / rangeInput[0].max) * 100 + "%";
+            // range.style.right = 100 - (maxVal / rangeInput[0].max) * 100 + "%";
         }
+        range.style.right = 0;
     };
     var ShowElement = function (el, enabledFilters) {
         var included = true;
@@ -355,8 +359,12 @@ function Collection() {
     function toggleFilters(event) {
         setOpenFilters(!openFilters);
     }
+    var closeFilters = function () {
+        setOpenFilters(false);
+    };
     return (React.createElement("div", { className: "collection" },
         React.createElement("div", { className: 'left-side collection-filters ' + (openFilters ? 'active' : '') },
+            React.createElement("div", { className: 'filters-close', onClick: closeFilters }, "X"),
             React.createElement("form", { method: 'get', action: "/collections/" + handle + "?search", id: "filters-form", onChange: function (e) { return submit(e.currentTarget); } },
                 filters.map(function (el) {
                     return React.createElement(React.Fragment, null,
@@ -371,15 +379,25 @@ function Collection() {
                     React.createElement("div", { className: "price-input" },
                         React.createElement("div", { className: "field" },
                             React.createElement("span", null, "Max"),
-                            React.createElement("input", { type: "number", className: "input-max", defaultValue: "500", onInput: priceInputChange }))),
+                            React.createElement("input", { type: "number", className: "input-max", defaultValue: maxPrice, onInput: priceInputChange }))),
                     React.createElement("div", { className: "slider" },
                         React.createElement("div", { className: "progress" })),
                     React.createElement("div", { className: "range-input" },
-                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: "0", max: "1500", defaultValue: "500", step: "10", onChange: rangeChange }))),
+                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: minPrice, max: maxPrice, defaultValue: maxPrice / 2, step: "5", onChange: rangeChange }))),
                 React.createElement("input", { type: "submit", className: 'apply-filters', onClick: function (e) { return toggleFilters(e); }, value: "Apply" }))),
         React.createElement("div", { className: "collection-data" },
+            React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } },
+                React.createElement("svg", { viewBox: "0 0 24 24", width: 45, height: 45, role: "img", xmlns: "http://www.w3.org/2000/svg", "aria-labelledby": "filterIconTitle", stroke: "#000000", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", fill: "none", color: "#000000" },
+                    React.createElement("g", { id: "SVGRepo_bgCarrier", "stroke-width": "0" }),
+                    React.createElement("g", { id: "SVGRepo_tracerCarrier", "stroke-linecap": "round", "stroke-linejoin": "round" }),
+                    React.createElement("g", { id: "SVGRepo_iconCarrier" },
+                        " ",
+                        React.createElement("title", { id: "filterIconTitle" }, "Filter"),
+                        " ",
+                        React.createElement("path", { d: "M10 12.261L4.028 3.972h16L14 12.329V17l-4 3z" }),
+                        " ")),
+                " Filters"),
             React.createElement("section", { className: "collection-intro" },
-                React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } }, "Open filters"),
                 React.createElement("div", { className: 'right-side' },
                     collection.image &&
                         React.createElement("div", { className: "collection-img", style: { backgroundImage: 'url(' + collection.image.url + ')' } },

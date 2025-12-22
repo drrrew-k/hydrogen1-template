@@ -169,21 +169,7 @@ function FeaturedCollection(_a) {
     if (!collection)
         return null;
     var image = collection === null || collection === void 0 ? void 0 : collection.image;
-    return (React.createElement("div", null,
-        React.createElement(react_1.Link, { className: "featured-collection", to: "/collections/" + collection.handle },
-            React.createElement("h2", null, collection.title),
-            image && (React.createElement("div", { className: "featured-collection-image", style: { aspectRatio: "unset" } },
-                React.createElement(hydrogen_1.Image, { data: image, sizes: "100vw" })))),
-        React.createElement("div", { className: "recommended-products-grid" }, collection.products.nodes.map(function (product) {
-            return React.createElement(react_1.Link, { key: product.id, className: "recommended-product", to: "/products/" + product.handle },
-                React.createElement(hydrogen_1.Image, { data: { url: "" + product.images.nodes[0].url }, aspectRatio: "1/1", sizes: "(min-width: 45em) 20vw, 50vw" }),
-                React.createElement("h4", null, product.title),
-                React.createElement("small", null,
-                    React.createElement(hydrogen_1.Money, { data: {
-                            amount: "" + product.priceRange.minVariantPrice.amount,
-                            currencyCode: "CAD"
-                        } })));
-        }))));
+    return (React.createElement("div", null));
 }
 function CategoryRow(_a) {
     var products = _a.products, store_settings = _a.store_settings, url = _a.url;
@@ -216,13 +202,13 @@ function HeroImage(_a) {
     var _b = _a.title, title = _b === void 0 ? 'Hero title' : _b, _c = _a.buttons, buttons = _c === void 0 ? [] : _c, _d = _a.imgsrc, imgsrc = _d === void 0 ? "https://cdn.shopify.com/s/files/1/1721/8901/files/pexels-alexandra-haddad-9317179.jpg?v=1717795912" : _d;
     return (React.createElement(React.Fragment, null,
         React.createElement("section", { className: "hero-image-section", key: "key" + Math.random() * 10 },
-            React.createElement("img", { className: 'hero-image', src: imgsrc }),
-            React.createElement("section", { className: "img-texts" },
-                React.createElement("section", { className: 'text-block' },
+            React.createElement("img", { className: 'hero-image', src: imgsrc, key: "key" + Math.random() * 10 }),
+            React.createElement("section", { className: "img-texts", key: "key" + Math.random() * 10 },
+                React.createElement("section", { className: 'text-block', key: "key" + Math.random() * 10 },
                     React.createElement("p", { className: 'hero-title', key: "key" + Math.random() * 10 }, title)),
-                React.createElement("section", { className: 'button-block' }, buttons.map(function (b) {
-                    return React.createElement("div", { className: "hero-button" },
-                        React.createElement("a", { href: "#", onClick: function () { return false; } }, b));
+                React.createElement("section", { className: 'button-block', key: "key" + Math.random() * 10 }, buttons.map(function (b) {
+                    return React.createElement("div", { className: "hero-button", key: "key" + Math.random() * 10 },
+                        React.createElement("a", { href: "#", onClick: function () { return false; }, key: "key" + Math.random() * 10 }, b));
                 }))))));
 }
 function RecommendedProducts(_a) {

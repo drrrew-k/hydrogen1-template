@@ -244,12 +244,15 @@ export default function Collection() {
   const enabledFilters = query.getAll('tags');
   const priceFilter = query.get('max-price');
   const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
-  // console.log("pdorudcts:");
+  // console.log("products:");
   // console.log(products);
 
   // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
   let checkedStates = [];
-    
+
+  const minPrice = Math.min.apply(Math, products.map(function(prod) { return prod.price_min; }));
+  const maxPrice = Math.max.apply(Math, products.map(function(prod) { return prod.price_min; }));;
+  
   for(let i = 0; i < filters.length; i++) {
     checkedStates.push({tag: filters[i], checked: false});
   }
@@ -290,22 +293,23 @@ export default function Collection() {
     const priceInput = document.querySelectorAll(".price-input input");
     const rangeInput = document.querySelectorAll(".range-input input");
     const range = document.querySelector(".slider .progress");
-    let priceGap = 100;
+    let priceGap = 10;
     let minPrice = parseInt(priceInput[0].value);
     //let maxPrice = parseInt(priceInput[1].value);
 
     // if (maxPrice - minPrice >= priceGap && maxPrice <= rangeInput[1].max) {
-    if (maxPrice <= rangeInput[1].max) {
-      if (e.target.className === "input-min") {
-        // rangeInput[0].value = minPrice;
-        // range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
-        range.style.left = (0 / rangeInput[0].max) * 100 + "%";
-      } else {
-        // rangeInput[1].value = maxPrice;
-        rangeInput[0].value = maxPrice;
-        range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-      }
-    }
+    // if (maxPrice <= rangeInput[1].max) {
+    //   if (e.target.className === "input-min") {
+    //     // rangeInput[0].value = minPrice;
+    //     // range.style.left = (minPrice / rangeInput[0].max) * 100 + "%";
+    //     range.style.left = (0 / rangeInput[0].max) * 100 + "%";
+    //   } else {
+    //     // rangeInput[1].value = maxPrice;
+    //     rangeInput[0].value = maxPrice;
+    //     range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
+    //   }
+    // }
+    range.style.right = 0;
   }
 
   let rangeChange = function (e) {
@@ -330,8 +334,10 @@ export default function Collection() {
       // priceInput[0].value = minVal;
       priceInput[0].value = maxVal;
       // range.style.left = (minVal / rangeInput[0].max) * 100 + "%";
-      range.style.right = 100 - (maxVal / rangeInput[0].max) * 100 + "%";
+      // range.style.right = 100 - (maxVal / rangeInput[0].max) * 100 + "%";
     }
+
+    range.style.right = 0;
   
   }
 
@@ -373,9 +379,14 @@ export default function Collection() {
     setOpenFilters(!openFilters);
   }
 
+  const closeFilters = () => {
+    setOpenFilters(false);
+  }
+
   return (
     <div className="collection">
       <div className={'left-side collection-filters ' +( openFilters ? 'active' : '')}>
+        <div className='filters-close' onClick={closeFilters}>X</div>
             
         <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
             {
@@ -399,7 +410,7 @@ export default function Collection() {
                 <div className="separator">-</div> */}
                 <div className="field">
                   <span>Max</span>
-                  <input type="number" className="input-max" defaultValue="500"  onInput={priceInputChange}/>
+                  <input type="number" className="input-max" defaultValue={maxPrice}  onInput={priceInputChange}/>
                 </div>
               </div>
               <div className="slider">
@@ -407,7 +418,7 @@ export default function Collection() {
               </div>
               <div className="range-input">
                 {/* <input type="range" className="range-min" min="0" max="10000" defaultValue="1500" step="100" onChange={rangeChange} /> */}
-                <input type="range" name="max-price" className="range-max" min="0" max="1500" defaultValue="500" step="10" onChange={rangeChange} />
+                <input type="range" name="max-price" className="range-max" min={minPrice} max={maxPrice} defaultValue={maxPrice / 2} step="5" onChange={rangeChange} />
               </div>
             </section>
 
@@ -433,10 +444,10 @@ export default function Collection() {
 
       <div className="collection-data">
 
-        <section className="collection-intro">
           <p className="open-filters" onClick={e => toggleFilters(e)}>
-            Open filters
+            <svg viewBox="0 0 24 24" width={45} height={45} role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="filterIconTitle" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" color="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title id="filterIconTitle">Filter</title> <path d="M10 12.261L4.028 3.972h16L14 12.329V17l-4 3z"></path> </g></svg> Filters
           </p>
+        <section className="collection-intro">
 
           <div className='right-side'>
             {collection.image && 

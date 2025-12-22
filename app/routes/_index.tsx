@@ -145,7 +145,7 @@ function FeaturedCollection({
   const image = collection?.image;
   return (
     <div>
-      <Link
+      {/* <Link
         className="featured-collection"
         to={`/collections/${collection.handle}`}
       >
@@ -156,9 +156,9 @@ function FeaturedCollection({
             <Image data={image} sizes="100vw" />
           </div>
         )}
-      </Link>
+      </Link> */}
 
-      <div className="recommended-products-grid">
+      {/* <div className="recommended-products-grid">
         {collection.products.nodes.map(product => {
           return <Link
                   key={product.id}
@@ -179,7 +179,7 @@ function FeaturedCollection({
                   </small>
                 </Link>
         })}
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -272,18 +272,18 @@ function HeroImage({
   return(
     <>
       <section className="hero-image-section" key={"key" + Math.random() * 10}>
-        <img className='hero-image' src={imgsrc}/>
+        <img className='hero-image' src={imgsrc} key={"key" + Math.random() * 10}/>
         
-        <section className="img-texts">
-          <section className='text-block'>
+        <section className="img-texts" key={"key" + Math.random() * 10}>
+          <section className='text-block' key={"key" + Math.random() * 10}>
             <p className='hero-title' key={"key" + Math.random() * 10}>{title}</p>
             {/* <p className='hero-subtitle'>Hero subtitle</p> */}
           </section>
-          <section className='button-block'>
+          <section className='button-block' key={"key" + Math.random() * 10}>
 
           {buttons.map((b) => {
-            return <div className="hero-button">
-            <a href="#" onClick={() => {return false;}}>{b}</a>
+            return <div className="hero-button" key={"key" + Math.random() * 10}>
+            <a href="#" onClick={() => {return false;}} key={"key" + Math.random() * 10}>{b}</a>
           </div>
         })}
 

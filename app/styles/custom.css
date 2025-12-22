@@ -751,6 +751,19 @@ main .collection {
     text-align: center;
 }
 
+.open-filters {
+    display: none;
+}
+
+.filters-close {
+    position: absolute;
+    right: 25px;
+}
+
+.open-filters {
+    display: none;
+}
+
 @media (max-width: 900px) {
 
     button.header-menu-mobile-toggle {
@@ -788,6 +801,8 @@ main .collection {
     }
 
     .open-filters {
+        display: flex;
+        align-items: center;
         padding: 10px 15px;
         text-decoration: underline;
     }
@@ -999,7 +1014,8 @@ main .collection {
   .slider .progress {
     height: 100%;
     left: 0%;
-    right: 65%;
+    /* right: 65%; */
+    right: 0;
     position: absolute;
     border-radius: 5px;
     background: #17a2b8;

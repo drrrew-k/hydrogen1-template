@@ -1,6 +1,6 @@
 import {Suspense} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@netlify/remix-runtime';
-import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {
   getSelectedProductOptions,
@@ -72,8 +72,12 @@ async function loadCriticalData({
     }
   }
 
+  const relatedProducts = await fetch(`https://rebuyengine.com/api/v1/products/similar_products?shopify_product_ids=${product.id}&key=${context.env.REBUY_KEY}&format=pretty`);
+
+
   return {
     product,
+    relatedProducts: await relatedProducts.json(),
   };
 }
 
@@ -97,7 +101,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
-
+  
   return {
     variants,
   };
@@ -127,7 +131,7 @@ function redirectToFirstVariant({
 }
 
 export default function Product() {
-  const {product, variants} = useLoaderData<typeof loader>();
+  const {product, variants, relatedProducts} = useLoaderData<typeof loader>();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
@@ -136,63 +140,121 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <Suspense
-          fallback={
-            <ProductForm
-              product={product}
-              selectedVariant={selectedVariant}
-              variants={[]}
-            />
-          }
-        >
-          <Await
-            errorElement="There was a problem loading product variants"
-            resolve={variants}
-          >
-            {(data) => (
+    <>
+      <div className="product">
+        <ProductImage image={selectedVariant?.image} />
+        <div className="product-main">
+          <h1>{title}</h1>
+          <ProductPrice
+            price={selectedVariant?.price}
+            compareAtPrice={selectedVariant?.compareAtPrice}
+          />
+          <br />
+          <Suspense
+            fallback={
               <ProductForm
                 product={product}
                 selectedVariant={selectedVariant}
-                variants={data?.product?.variants.nodes || []}
+                variants={[]}
               />
-            )}
-          </Await>
-        </Suspense>
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
+            }
+          >
+            <Await
+              errorElement="There was a problem loading product variants"
+              resolve={variants}
+            >
+              {(data) => (
+                <ProductForm
+                  product={product}
+                  selectedVariant={selectedVariant}
+                  variants={data?.product?.variants.nodes || []}
+                />
+              )}
+            </Await>
+          </Suspense>
+          <br />
+          <br />
+          <p>
+            <strong>Description</strong>
+          </p>
+          <br />
+          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+          <br />
+        </div>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
+        />
       </div>
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
-              variantId: selectedVariant?.id || '',
-              variantTitle: selectedVariant?.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
-      />
-    </div>
+
+      <RelatedProducts related_products={relatedProducts} current_product={product}/>
+    </>
   );
+}
+
+function RelatedProducts({related_products, current_product}) {
+
+  return (
+    <div className="related-products-wrapper">
+      <h2>You may also like</h2>
+
+      <section className="related-products">
+        <div className="collection-products">
+          {
+            related_products.data.map((item) => {
+              return  (
+                current_product.handle == item.handle ? <></> : <SingleItem item={item} />
+              )
+            })
+          }
+        
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function SingleItem(product) {
+  const item = product.item;
+
+  return (
+    <div
+      className="product-link"
+    >
+      <div>
+      <div className='slider-item single-item' key={item.id}>
+      <Link
+      className="product-link"
+      key={item.id}
+      prefetch="intent"
+      to={`/products/${item.handle}`}
+    >
+        
+                      <ProductImage
+                        image={(item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "")}
+                        />
+                      <div className='slider-lower-block'>
+                        <h4>{item.title}</h4>
+                        <span className='price'>
+                          ${item.variants[Object.keys(item.variants)[0]].price}
+                        </span>
+                      </div>
+        </Link>
+        </div>
+      </div>
+      </div>
+  )
 }
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
