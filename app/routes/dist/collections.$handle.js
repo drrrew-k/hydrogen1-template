@@ -234,7 +234,7 @@ function FilterList(el, onchange, filters, handle, query) {
         React.createElement("div", { className: 'form-group' },
             React.createElement("p", null,
                 React.createElement("label", { className: "cb-container link" },
-                    React.createElement("span", null, el.el),
+                    React.createElement("span", { className: "label-text" }, el.el),
                     React.createElement("input", { type: "checkbox", name: "tags", value: el.el, onChange: el.onchange, defaultChecked: el.query.includes(el.el) }),
                     React.createElement("span", { className: "checkmark" }))))));
 }
@@ -250,7 +250,6 @@ function Collection() {
     var checkedStates = [];
     var minPrice = Math.min.apply(Math, products.map(function (prod) { return prod.price_min; }));
     var maxPrice = Math.max.apply(Math, products.map(function (prod) { return prod.price_min; }));
-    ;
     for (var i = 0; i < filters.length; i++) {
         checkedStates.push({ tag: filters[i], checked: false });
     }
@@ -364,18 +363,18 @@ function Collection() {
     };
     return (React.createElement("div", { className: "collection" },
         React.createElement("div", { className: 'left-side collection-filters ' + (openFilters ? 'active' : '') },
-            React.createElement("div", { className: 'filters-close', onClick: closeFilters }, "X"),
+            React.createElement("button", { className: "close reset filters-close", onClick: closeFilters }, "\u00D7"),
             React.createElement("form", { method: 'get', action: "/collections/" + handle + "?search", id: "filters-form", onChange: function (e) { return submit(e.currentTarget); } },
                 filters.map(function (el) {
                     return React.createElement(React.Fragment, null,
                         " ",
-                        React.createElement("h2", null, el.label),
+                        React.createElement("h2", { className: 'filter-title' }, el.label),
                         el.values.map(function (item) {
                             return React.createElement(FilterList, { el: item, onchange: submit, filters: checkedStates, handle: handle, query: enabledFilters });
                         }));
                 }),
-                React.createElement("h2", null, "Price"),
-                React.createElement("section", null,
+                React.createElement("h2", { className: 'filter-title' }, "Price"),
+                React.createElement("section", { className: 'price-section' },
                     React.createElement("div", { className: "price-input" },
                         React.createElement("div", { className: "field" },
                             React.createElement("span", null, "Max"),
@@ -387,16 +386,13 @@ function Collection() {
                 React.createElement("input", { type: "submit", className: 'apply-filters', onClick: function (e) { return toggleFilters(e); }, value: "Apply" }))),
         React.createElement("div", { className: "collection-data" },
             React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } },
-                React.createElement("svg", { viewBox: "0 0 24 24", width: 45, height: 45, role: "img", xmlns: "http://www.w3.org/2000/svg", "aria-labelledby": "filterIconTitle", stroke: "#000000", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", fill: "none", color: "#000000" },
+                React.createElement("svg", { fill: "#000000", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" },
                     React.createElement("g", { id: "SVGRepo_bgCarrier", "stroke-width": "0" }),
                     React.createElement("g", { id: "SVGRepo_tracerCarrier", "stroke-linecap": "round", "stroke-linejoin": "round" }),
                     React.createElement("g", { id: "SVGRepo_iconCarrier" },
-                        " ",
-                        React.createElement("title", { id: "filterIconTitle" }, "Filter"),
-                        " ",
-                        React.createElement("path", { d: "M10 12.261L4.028 3.972h16L14 12.329V17l-4 3z" }),
-                        " ")),
-                " Filters"),
+                        React.createElement("path", { d: "M11,4.5a1,1,0,0,1,1-1h9a1,1,0,0,1,0,2H12A1,1,0,0,1,11,4.5Zm1,6h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2Zm0,5h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2Zm0,5h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2ZM6,2A1,1,0,0,0,5,3V18.586L3.707,17.293a1,1,0,0,0-1.414,1.414l3,3a1,1,0,0,0,1.416,0l3-3a1,1,0,0,0-1.414-1.414L7,18.586V3A1,1,0,0,0,6,2Z" }))),
+                " ",
+                React.createElement("span", null, "Filters")),
             React.createElement("section", { className: "collection-intro" },
                 React.createElement("div", { className: 'right-side' },
                     collection.image &&

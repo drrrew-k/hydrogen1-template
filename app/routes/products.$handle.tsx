@@ -225,6 +225,26 @@ function RelatedProducts({related_products, current_product}) {
   )
 }
 
+function getImage(item) {
+  let image_exists = item.images && Object.keys(item.images).length > 0;
+  if(!image_exists) {
+    return "";
+  }
+  let img = item.images[Object.keys(item.images)[0]];
+  // item.images[0].src
+  // (item.images && Object.keys(item.images).length > 0 ? ] : "")
+  return {
+    alt: img.alt ?? "",
+    src: item.images[0].src,
+    key: img.key ?? "",
+    id: img.id ?? "",
+    url: img.src,
+    height: img.height ?? 800,
+    width: "auto", // ?? 600,
+  };
+  // return item.images[Object.keys(item.images)[0]].src;
+}
+
 function SingleItem(product) {
   const item = product.item;
 
@@ -240,9 +260,8 @@ function SingleItem(product) {
       prefetch="intent"
       to={`/products/${item.handle}`}
     >
-        
                       <ProductImage
-                        image={(item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "")}
+                        image={getImage(item)}
                         />
                       <div className='slider-lower-block'>
                         <h4>{item.title}</h4>

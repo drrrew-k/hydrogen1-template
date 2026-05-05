@@ -218,7 +218,9 @@ function RecommendedProducts(_a) {
         React.createElement(react_2.Suspense, { fallback: React.createElement("div", null, "Loading...") },
             React.createElement(react_1.Await, { resolve: products }, function (response) { return (React.createElement("div", { className: "recommended-products-grid" }, response
                 ? response.data.map(function (product) { return (React.createElement(react_1.Link, { key: product.id, className: "recommended-product", to: "/products/" + product.handle },
-                    React.createElement(hydrogen_1.Image, { data: { url: "" + product.image.src }, aspectRatio: "1/1", sizes: "(min-width: 45em) 20vw, 50vw" }),
+                    React.createElement(hydrogen_1.Image, { data: { url: "" + product.image.src }, 
+                        // aspectRatio="1/1"
+                        aspectRatio: "initial", width: "auto" }),
                     React.createElement("h4", null, product.title),
                     React.createElement("small", null,
                         React.createElement(hydrogen_1.Money, { data: {

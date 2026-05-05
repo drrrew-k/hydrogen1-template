@@ -215,13 +215,33 @@ function RelatedProducts(_a) {
                 return (current_product.handle == item.handle ? React.createElement(React.Fragment, null) : React.createElement(SingleItem, { item: item }));
             })))));
 }
+function getImage(item) {
+    var _a, _b, _c, _d;
+    var image_exists = item.images && Object.keys(item.images).length > 0;
+    if (!image_exists) {
+        return "";
+    }
+    var img = item.images[Object.keys(item.images)[0]];
+    // item.images[0].src
+    // (item.images && Object.keys(item.images).length > 0 ? ] : "")
+    return {
+        alt: (_a = img.alt) !== null && _a !== void 0 ? _a : "",
+        src: item.images[0].src,
+        key: (_b = img.key) !== null && _b !== void 0 ? _b : "",
+        id: (_c = img.id) !== null && _c !== void 0 ? _c : "",
+        url: img.src,
+        height: (_d = img.height) !== null && _d !== void 0 ? _d : 800,
+        width: "auto"
+    };
+    // return item.images[Object.keys(item.images)[0]].src;
+}
 function SingleItem(product) {
     var item = product.item;
     return (React.createElement("div", { className: "product-link" },
         React.createElement("div", null,
             React.createElement("div", { className: 'slider-item single-item', key: item.id },
                 React.createElement(react_2.Link, { className: "product-link", key: item.id, prefetch: "intent", to: "/products/" + item.handle },
-                    React.createElement(ProductImage_1.ProductImage, { image: (item.images && Object.keys(item.images).length > 0 ? item.images[Object.keys(item.images)[0]] : "") }),
+                    React.createElement(ProductImage_1.ProductImage, { image: getImage(item) }),
                     React.createElement("div", { className: 'slider-lower-block' },
                         React.createElement("h4", null, item.title),
                         React.createElement("span", { className: 'price' },

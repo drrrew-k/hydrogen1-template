@@ -227,7 +227,7 @@ export function FilterList(el, onchange, filters, handle, query) {
         <div className='form-group'>
           <p>
 
-            <label className="cb-container link"><span>{el.el}</span>
+            <label className="cb-container link"><span className="label-text">{el.el}</span>
               <input type="checkbox" name="tags" value={el.el} onChange={el.onchange} defaultChecked={el.query.includes(el.el)}/>
               <span className="checkmark"></span>
             </label>
@@ -251,7 +251,7 @@ export default function Collection() {
   let checkedStates = [];
 
   const minPrice = Math.min.apply(Math, products.map(function(prod) { return prod.price_min; }));
-  const maxPrice = Math.max.apply(Math, products.map(function(prod) { return prod.price_min; }));;
+  const maxPrice = Math.max.apply(Math, products.map(function(prod) { return prod.price_min; }));
   
   for(let i = 0; i < filters.length; i++) {
     checkedStates.push({tag: filters[i], checked: false});
@@ -386,13 +386,15 @@ export default function Collection() {
   return (
     <div className="collection">
       <div className={'left-side collection-filters ' +( openFilters ? 'active' : '')}>
-        <div className='filters-close' onClick={closeFilters}>X</div>
+      <button className="close reset filters-close" onClick={closeFilters}>
+            &times;
+          </button>
             
         <form method='get' action={`/collections/${handle}?search`} id="filters-form" onChange={(e) => submit(e.currentTarget)}>
             {
               filters.map((el) => {
                
-                return <> <h2>{el.label}</h2>
+                return <> <h2 className='filter-title'>{el.label}</h2>
                 {el.values.map(item => {
                   return <FilterList el={item} onchange={submit} filters={checkedStates} handle={handle} query={enabledFilters} />
                 })}
@@ -400,8 +402,8 @@ export default function Collection() {
               })
             }
 
-            <h2>Price</h2>
-            <section>
+            <h2 className='filter-title'>Price</h2>
+            <section className='price-section'>
               <div className="price-input">
                 {/* <div className="field">
                   <span>Min</span>
@@ -445,7 +447,8 @@ export default function Collection() {
       <div className="collection-data">
 
           <p className="open-filters" onClick={e => toggleFilters(e)}>
-            <svg viewBox="0 0 24 24" width={45} height={45} role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="filterIconTitle" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" color="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title id="filterIconTitle">Filter</title> <path d="M10 12.261L4.028 3.972h16L14 12.329V17l-4 3z"></path> </g></svg> Filters
+          <svg fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M11,4.5a1,1,0,0,1,1-1h9a1,1,0,0,1,0,2H12A1,1,0,0,1,11,4.5Zm1,6h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2Zm0,5h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2Zm0,5h9a1,1,0,0,0,0-2H12a1,1,0,0,0,0,2ZM6,2A1,1,0,0,0,5,3V18.586L3.707,17.293a1,1,0,0,0-1.414,1.414l3,3a1,1,0,0,0,1.416,0l3-3a1,1,0,0,0-1.414-1.414L7,18.586V3A1,1,0,0,0,6,2Z"></path></g></svg> <span>Filters</span>
+            {/* <svg viewBox="0 0 24 24" width={45} height={45} role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="filterIconTitle" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" color="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title id="filterIconTitle">Filter</title> <path d="M10 12.261L4.028 3.972h16L14 12.329V17l-4 3z"></path> </g></svg> Filters */}
           </p>
         <section className="collection-intro">
 
