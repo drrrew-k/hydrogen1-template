@@ -9,7 +9,7 @@
 
 /* html, body {
     font-family: "Open Sans";
-  } */
+} */
 
 body.body-dark {
     --current-accent: var(--color-accent-dark);
@@ -807,6 +807,11 @@ main .collection {
 
 .price-section {
     padding-top: 15px !important;
+}
+
+.pagination {
+    margin-top: 15px;
+    display: block;
 }
 
 @media (max-width: 900px) {

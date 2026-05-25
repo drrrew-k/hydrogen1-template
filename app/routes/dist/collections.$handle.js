@@ -240,16 +240,17 @@ function FilterList(el, onchange, filters, handle, query) {
 }
 exports.FilterList = FilterList;
 function Collection() {
+    var _a;
     var query = react_1.useSearchParams()[0];
     var enabledFilters = query.getAll('tags');
-    var priceFilter = query.get('max-price');
-    var _a = react_1.useLoaderData(), collection = _a.collection, menu = _a.menu, allItems = _a.allItems, products = _a.products, filters = _a.filters, handle = _a.handle;
+    var _b = react_1.useLoaderData(), collection = _b.collection, menu = _b.menu, allItems = _b.allItems, products = _b.products, filters = _b.filters, handle = _b.handle;
     // console.log("products:");
     // console.log(products);
     // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
     var checkedStates = [];
     var minPrice = Math.min.apply(Math, products.map(function (prod) { return prod.price_min; }));
     var maxPrice = Math.max.apply(Math, products.map(function (prod) { return prod.price_min; }));
+    var priceFilter = (_a = query.get('max-price')) !== null && _a !== void 0 ? _a : maxPrice;
     for (var i = 0; i < filters.length; i++) {
         checkedStates.push({ tag: filters[i], checked: false });
     }
@@ -354,13 +355,43 @@ function Collection() {
         //           el.collections.some(c => c.handle == collection.handle);
         //           ;
     };
-    var _b = react_3.useState(false), openFilters = _b[0], setOpenFilters = _b[1];
+    var _c = react_3.useState(false), openFilters = _c[0], setOpenFilters = _c[1];
     function toggleFilters(event) {
         setOpenFilters(!openFilters);
     }
     var closeFilters = function () {
         setOpenFilters(false);
     };
+    react_3.useEffect(function () {
+        setPage(1);
+    }, [products]);
+    var _d = react_3.useState(1), page = _d[0], setPage = _d[1];
+    var PAGE_SIZE = 12;
+    var totalPages = 1;
+    var paginatedProducts = react_3.useMemo(function () {
+        console.log("Paginating");
+        var start = (page - 1) * PAGE_SIZE;
+        var end = start + PAGE_SIZE;
+        var prods = products.filter(function (el) {
+            if (enabledFilters.length) {
+                var tag_cat_exists = el.tags.some(function (val) { return enabledFilters.includes(val) && el.collections.some(function (c) { return c.handle == collection.handle; }); });
+                if (el.variants[Object.keys(el.variants)[0]].price <= priceFilter) {
+                    if (tag_cat_exists) {
+                        return el;
+                    }
+                }
+            }
+            else {
+                console.log("priceFilter: ", priceFilter);
+                if (el.collections.some(function (c) { return c.handle == collection.handle; }) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
+                    return el;
+                }
+            }
+        });
+        totalPages = Math.ceil(prods.length / PAGE_SIZE);
+        // return products.slice(start, end);
+        return prods.slice(start, end);
+    }, [page, products]);
     return (React.createElement("div", { className: "collection" },
         React.createElement("div", { className: 'left-side collection-filters ' + (openFilters ? 'active' : '') },
             React.createElement("button", { className: "close reset filters-close", onClick: closeFilters }, "\u00D7"),
@@ -378,11 +409,11 @@ function Collection() {
                     React.createElement("div", { className: "price-input" },
                         React.createElement("div", { className: "field" },
                             React.createElement("span", null, "Max"),
-                            React.createElement("input", { type: "number", className: "input-max", defaultValue: maxPrice, onInput: priceInputChange }))),
+                            React.createElement("input", { type: "number", className: "input-max", defaultValue: priceFilter, onInput: priceInputChange }))),
                     React.createElement("div", { className: "slider" },
                         React.createElement("div", { className: "progress" })),
                     React.createElement("div", { className: "range-input" },
-                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: minPrice, max: maxPrice, defaultValue: maxPrice, step: "1", onChange: rangeChange }))),
+                        React.createElement("input", { type: "range", name: "max-price", className: "range-max", min: minPrice, max: maxPrice, defaultValue: priceFilter, step: "1", onChange: rangeChange }))),
                 React.createElement("input", { type: "submit", className: 'apply-filters', onClick: function (e) { return toggleFilters(e); }, value: "Apply" }))),
         React.createElement("div", { className: "collection-data" },
             React.createElement("p", { className: "open-filters", onClick: function (e) { return toggleFilters(e); } },
@@ -403,9 +434,18 @@ function Collection() {
                             "Shop ",
                             collection.title.toLowerCase()),
                         React.createElement("p", { className: "collection-description" }, collection.description)))),
-            React.createElement("div", { className: "collection-products" }, products.map(function (el) {
-                return ShowElement(el, enabledFilters) && React.createElement(SingleItem, { item: el, collections: el.collections });
-            })))));
+            React.createElement("div", { className: "collection-products" }, paginatedProducts.map(function (el) {
+                // return ShowElement(el, enabledFilters) && <SingleItem item={el} collections={el.collections} />
+                return React.createElement(SingleItem, { item: el, collections: el.collections });
+            })),
+            React.createElement("div", { className: "pagination" },
+                React.createElement("button", { disabled: page === 1, onClick: function () { return setPage(function (p) { return p - 1; }); } }, "\u2190 Previous"),
+                React.createElement("span", null,
+                    "Page ",
+                    page,
+                    " of ",
+                    totalPages),
+                React.createElement("button", { disabled: page === totalPages, onClick: function () { return setPage(function (p) { return p + 1; }); } }, "Next \u2192")))));
 }
 exports["default"] = Collection;
 function SingleItem(_a) {

@@ -11,7 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import { useSubmit } from "@remix-run/react";
 import axios from 'axios';
-import { useState, useLayoutEffect, useEffect } from 'react';
+import { useState, useLayoutEffect, useEffect, useMemo } from 'react';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -242,16 +242,17 @@ export default function Collection() {
   const [query] = useSearchParams();
 
   const enabledFilters = query.getAll('tags');
-  const priceFilter = query.get('max-price');
   const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
   // console.log("products:");
   // console.log(products);
-
+  
   // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
   let checkedStates = [];
-
+  
   const minPrice = Math.min.apply(Math, products.map(function(prod) { return prod.price_min; }));
   const maxPrice = Math.max.apply(Math, products.map(function(prod) { return prod.price_min; }));
+
+  const priceFilter = query.get('max-price') ?? maxPrice;
   
   for(let i = 0; i < filters.length; i++) {
     checkedStates.push({tag: filters[i], checked: false});
@@ -383,6 +384,41 @@ export default function Collection() {
     setOpenFilters(false);
   }
 
+  useEffect(() => {
+    setPage(1);
+  }, [products]);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 12;
+  let totalPages = 1;
+
+  const paginatedProducts = useMemo(() => {
+    console.log("Paginating");
+    const start = (page - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+
+    let prods = products.filter(el => {
+      if (enabledFilters.length) {
+        let tag_cat_exists = el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle));
+        if(el.variants[Object.keys(el.variants)[0]].price <= priceFilter) {
+          if(tag_cat_exists) {
+            return el;
+          }
+        }
+
+      } else {
+        console.log("priceFilter: ", priceFilter);
+        if(el.collections.some(c => c.handle == collection.handle) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
+          return el;
+        }
+      }
+    });
+
+    totalPages = Math.ceil(prods.length / PAGE_SIZE);
+
+    // return products.slice(start, end);
+    return prods.slice(start, end);
+  }, [page, products]);
+
   return (
     <div className="collection">
       <div className={'left-side collection-filters ' +( openFilters ? 'active' : '')}>
@@ -412,7 +448,7 @@ export default function Collection() {
                 <div className="separator">-</div> */}
                 <div className="field">
                   <span>Max</span>
-                  <input type="number" className="input-max" defaultValue={maxPrice}  onInput={priceInputChange}/>
+                  <input type="number" className="input-max" defaultValue={priceFilter}  onInput={priceInputChange}/>
                 </div>
               </div>
               <div className="slider">
@@ -420,7 +456,7 @@ export default function Collection() {
               </div>
               <div className="range-input">
                 {/* <input type="range" className="range-min" min="0" max="10000" defaultValue="1500" step="100" onChange={rangeChange} /> */}
-                <input type="range" name="max-price" className="range-max" min={minPrice} max={maxPrice} defaultValue={maxPrice} step="1" onChange={rangeChange} />
+                <input type="range" name="max-price" className="range-max" min={minPrice} max={maxPrice} defaultValue={priceFilter} step="1" onChange={rangeChange} />
               </div>
             </section>
 
@@ -467,12 +503,33 @@ export default function Collection() {
         </section>
 
         <div className="collection-products">
-          {products.map(el => {
-              return ShowElement(el, enabledFilters) && <SingleItem item={el} collections={el.collections} />
+          {/* {products.map(el => { */}
+          {paginatedProducts.map(el => {
+              // return ShowElement(el, enabledFilters) && <SingleItem item={el} collections={el.collections} />
+              return <SingleItem item={el} collections={el.collections} />
 
           })}
 
         </div>
+
+        <div className="pagination">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                ← Previous
+              </button>
+
+              <span>Page {page} of {totalPages}</span>
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next →
+              </button>
+            </div>
+            
         {/* <Pagination connection={collection.products}>
           {({nodes, isLoading, PreviousLink, NextLink}) => (
             <>
@@ -489,6 +546,8 @@ export default function Collection() {
           )}
         </Pagination> */}
       </div>
+
+      
     </div>
   );
 }
