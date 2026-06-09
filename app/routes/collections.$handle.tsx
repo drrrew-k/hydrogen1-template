@@ -28,49 +28,57 @@ export async function loader(args: LoaderFunctionArgs) {
   const options = { timeout: 8000 };
   const controller = new AbortController();
 
+  let collectionIdFetched = null;
+  // console.log("Here1");
+    let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
+      // console.log("The response", collection_response.data.collections[0].id);
+      const collectionId = collection_response.data.collections[0].id;
+      collectionIdFetched = collectionId
+      console.log("collectionId1: ", collectionId);
+    // if(collectionId == "372645318") {
+      // console.log("collection_response.data.collections[0].id: ", collection_response.data.collections[0].id);
+      // return false;
+    // }
+    //collection_scope=5882937350 (collection id)
+    // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
+    // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
+    // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
+    // console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
+    // console.log("link: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&limit=70&collection_scope=' + collectionId);
+    let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&page=1&collection_scope=' + collectionId, { timeout: 10000 })
+    .then(r => {
+      // console.log("Rsposnsse:", r);
+      let total_products = r.data.total_product;
+      let products = r.data.products;
+      console.log("total_products ", total_products);
 
-
-  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
-    // console.log("The response", collection_response.data.collections[0].id);
-    const collectionId = collection_response.data.collections[0].id;
-
-  //collection_scope=5882937350 (collection id)
-  // https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=activewear
-  // https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&collection_scope=609320966
-  // let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true', { timeout: 10000 })
-  // console.log("And the link is: ", 'https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId);
-  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&collection_scope=' + collectionId, { timeout: 10000 })
-  .then(r => {
-    // console.log("Rsposnsse:", r);
-    let products = r.data.products;
-
-    let filters = r.data.filter.options.filter(element => {
-      if(['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
-        return true;
-      } else {
-        return false;
-      }
-      // return Object.keys(element).includes('label') && element.label != '';
-      // return Object.keys(element).includes('label') && element.label != '';
-    });
-
-
-    return {products: products, filters: filters }
-
-  }).then(e => {
-    
-    e.filters.map(el => {
-        if(Object.keys(el).includes('manuvalues') && el.manualValues) {
-          return el.manualValues;
+      let filters = r.data.filter.options.filter(element => {
+        if(['Price', 'Gender', 'Product Type', 'Vendor'].includes(element.label)) {
+          return true;
+        } else {
+          return false;
         }
-        return el.values;
+        // return Object.keys(element).includes('label') && element.label != '';
+        // return Object.keys(element).includes('label') && element.label != '';
       });
 
-    return e;
-  });
 
-  return filterOptions;
-});
+      return {products: products, filters: filters, totalProducts: total_products }
+
+    }).then(e => {
+      
+      e.filters.map(el => {
+          if(Object.keys(el).includes('manuvalues') && el.manualValues) {
+            return el.manualValues;
+          }
+          return el.values;
+        });
+
+      return e;
+    });
+
+    return filterOptions;
+  });
 
 
   // //collection_scope=5882937350 (collection id)
@@ -105,12 +113,13 @@ export async function loader(args: LoaderFunctionArgs) {
   // });
 
   const products = filterOptions.products;
+  const totalProducts = filterOptions.totalProducts;
   var filteredVals = [];
   var filters = await new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(filterOptions);
     }, 1000);
-}).then(r => {
+  }).then(r => {
   let fil = [];
 
   let innerItems = {};
@@ -132,10 +141,10 @@ export async function loader(args: LoaderFunctionArgs) {
       }
     }
   });
-  return fil;
-});
+    return fil;
+  });
 
-  return defer({...deferredData, ...criticalData, products, filters, handle});
+  return defer({...deferredData, ...criticalData, products, filters, handle, totalProducts, collectionIdFetched});
 }
 
 /**
@@ -242,9 +251,10 @@ export default function Collection() {
   const [query] = useSearchParams();
 
   const enabledFilters = query.getAll('tags');
-  const {collection, menu, allItems, products, filters, handle} = useLoaderData<typeof loader>();
+  const {collection, menu, allItems, products, filters, handle, totalProducts, collectionIdFetched} = useLoaderData<typeof loader>();
   // console.log("products:");
   // console.log(products);
+  console.log("totalProducts after loader: ", totalProducts);
   
   // const checkedStates = new Array(filters.length).fill({tag: "TheTest", checked: false});
   let checkedStates = [];
@@ -386,38 +396,55 @@ export default function Collection() {
 
   useEffect(() => {
     setPage(1);
-  }, [products]);
+  }, []);
+
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 12;
-  let totalPages = 1;
+  const [totalPages, setTotalPages] = useState(1);
 
-  const paginatedProducts = useMemo(() => {
-    console.log("Paginating");
-    const start = (page - 1) * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
+  const [paginatedProducts, setPaginatedProducts] = useState([]);
+  // const paginatedProducts = useMemo(() => {   
+  useEffect(() => {
+    axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&page=' + page + '&collection_scope=' + collectionIdFetched, { timeout: 10000 })
+    .then(r => {
+      // console.log("Rsposnsse:", r);
+      let total_products = r.data.total_product;
+      let products = r.data.products;
+      console.log("total_products inner", total_products);
 
-    let prods = products.filter(el => {
-      if (enabledFilters.length) {
-        let tag_cat_exists = el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle));
-        if(el.variants[Object.keys(el.variants)[0]].price <= priceFilter) {
-          if(tag_cat_exists) {
+
+      const start = (page - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+
+      let prods = products.filter(el => {
+        if (enabledFilters.length) {
+          let tag_cat_exists = el.tags.some(val => enabledFilters.includes(val) && el.collections.some(c => c.handle == collection.handle));
+          if(el.variants[Object.keys(el.variants)[0]].price <= priceFilter) {
+            if(tag_cat_exists) {
+              return el;
+            }
+          }
+
+        } else {
+          //)
+           if(el.collections.some(c => c.handle == collection.handle) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
+            //if(el.collections.some(c => c.handle == 'print-tops')) {
             return el;
           }
         }
+      });
 
-      } else {
-        console.log("priceFilter: ", priceFilter);
-        if(el.collections.some(c => c.handle == collection.handle) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
-          return el;
-        }
-      }
+      console.log("prods.length: ", prods.length);
+      setTotalPages(Math.ceil(total_products / PAGE_SIZE));
+
+      // return products.slice(start, end);
+      // return prods.slice(start, end);
+      console.log("products a: ", prods);
+      setPaginatedProducts(prods);
+      // return {products};
     });
-
-    totalPages = Math.ceil(prods.length / PAGE_SIZE);
-
-    // return products.slice(start, end);
-    return prods.slice(start, end);
-  }, [page, products]);
+    
+  }, [page]);
 
   return (
     <div className="collection">
@@ -517,7 +544,7 @@ export default function Collection() {
                 disabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
               >
-                ← Previous
+                ← Previous 
               </button>
 
               <span>Page {page} of {totalPages}</span>
