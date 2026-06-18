@@ -405,12 +405,13 @@ export default function Collection() {
   const [paginatedProducts, setPaginatedProducts] = useState([]);
   // const paginatedProducts = useMemo(() => {   
   useEffect(() => {
-    axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&page=' + page + '&collection_scope=' + collectionIdFetched, { timeout: 10000 })
+    axios.get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&limit=12&page=' + page + '&collection_scope=' + collectionIdFetched, { timeout: 10000 })
     .then(r => {
       // console.log("Rsposnsse:", r);
       let total_products = r.data.total_product;
       let products = r.data.products;
       console.log("total_products inner", total_products);
+      console.log("total_products inner length", products.length);
 
 
       const start = (page - 1) * PAGE_SIZE;
@@ -430,6 +431,11 @@ export default function Collection() {
            if(el.collections.some(c => c.handle == collection.handle) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
             //if(el.collections.some(c => c.handle == 'print-tops')) {
             return el;
+          } else {
+            if(el.collections.some(c => c.handle == collection.handle)) {
+              console.log("Not match price: ", el.variants[Object.keys(el.variants)[0]].price, " exp price: ", priceFilter);
+              console.log(el);
+            }
           }
         }
       });
@@ -547,7 +553,7 @@ export default function Collection() {
                 ← Previous 
               </button>
 
-              <span>Page {page} of {totalPages}</span>
+              <span>Page {page} {!enabledFilters.length && priceFilter == maxPrice && <>of {totalPages}</>}</span>
 
               <button
                 disabled={page === totalPages}
