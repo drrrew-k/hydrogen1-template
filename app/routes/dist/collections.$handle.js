@@ -372,20 +372,19 @@ function Collection() {
     react_3.useEffect(function () {
         setPage(1);
     }, []);
-    var getNewProducts = function () {
-    };
     var _d = react_3.useState(1), page = _d[0], setPage = _d[1];
     var PAGE_SIZE = 12;
     var _e = react_3.useState(1), totalPages = _e[0], setTotalPages = _e[1];
     var _f = react_3.useState([]), paginatedProducts = _f[0], setPaginatedProducts = _f[1];
     // const paginatedProducts = useMemo(() => {   
     react_3.useEffect(function () {
-        axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&page=' + page + '&collection_scope=' + collectionIdFetched, { timeout: 10000 })
+        axios_1["default"].get('https://services.mybcapps.com/bc-sf-filter/filter?shop=avida-healthwear-inc.myshopify.com&build_filter_tree=true&limit=12&page=' + page + '&collection_scope=' + collectionIdFetched, { timeout: 10000 })
             .then(function (r) {
             // console.log("Rsposnsse:", r);
             var total_products = r.data.total_product;
             var products = r.data.products;
             console.log("total_products inner", total_products);
+            console.log("total_products inner length", products.length);
             var start = (page - 1) * PAGE_SIZE;
             var end = start + PAGE_SIZE;
             var prods = products.filter(function (el) {
@@ -402,6 +401,12 @@ function Collection() {
                     if (el.collections.some(function (c) { return c.handle == collection.handle; }) && (el.variants[Object.keys(el.variants)[0]].price <= priceFilter)) {
                         //if(el.collections.some(c => c.handle == 'print-tops')) {
                         return el;
+                    }
+                    else {
+                        if (el.collections.some(function (c) { return c.handle == collection.handle; })) {
+                            console.log("Not match price: ", el.variants[Object.keys(el.variants)[0]].price, " exp price: ", priceFilter);
+                            console.log(el);
+                        }
                     }
                 }
             });
@@ -461,17 +466,11 @@ function Collection() {
                 return React.createElement(SingleItem, { item: el, collections: el.collections });
             })),
             React.createElement("div", { className: "pagination" },
-                React.createElement("button", { disabled: page === 1, 
-                    // onClick={() => setPage((p) => p - 1)}
-                    onClick: function () { return getNewProducts(); } }, "\u2190 Previous"),
+                React.createElement("button", { disabled: page === 1, onClick: function () { return setPage(function (p) { return p - 1; }); } }, "\u2190"),
                 React.createElement("span", null,
                     "Page ",
-                    page,
-                    " of ",
-                    totalPages),
-                React.createElement("button", { disabled: page === totalPages, 
-                    // onClick={() => setPage((p) => p + 1)}
-                    onClick: function () { return getNewProducts(); } }, "Next \u2192")))));
+                    page),
+                React.createElement("button", { disabled: page === totalPages, onClick: function () { return setPage(function (p) { return p + 1; }); } }, "\u2192")))));
 }
 exports["default"] = Collection;
 function SingleItem(_a) {

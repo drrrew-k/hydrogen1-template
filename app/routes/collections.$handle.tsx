@@ -528,7 +528,7 @@ export default function Collection() {
               </div>
             }
             <div className='collection-details'>
-              <p className='collection-header'>Shop {collection.title.toLowerCase()}</p>
+              <h1 className='collection-header'>Shop {collection.title.toLowerCase()}</h1>
               <p className="collection-description">{collection.description}</p>
             </div>
           </div>
@@ -550,16 +550,18 @@ export default function Collection() {
                 disabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
               >
-                ← Previous 
+                ←  
               </button>
 
-              <span>Page {page} {!enabledFilters.length && priceFilter == maxPrice && <>of {totalPages}</>}</span>
+              <span>Page {page}
+              {/* {!enabledFilters.length && priceFilter == maxPrice && <>of {totalPages}</>} */}
+              </span>
 
               <button
                 disabled={page === totalPages}
                 onClick={() => setPage((p) => p + 1)}
               >
-                Next →
+                 →
               </button>
             </div>
             

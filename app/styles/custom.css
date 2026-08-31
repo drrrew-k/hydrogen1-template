@@ -812,6 +812,8 @@ main .collection {
 .pagination {
     margin-top: 15px;
     display: block;
+    display: flex;
+    gap: 5px;
 }
 
 @media (max-width: 900px) {

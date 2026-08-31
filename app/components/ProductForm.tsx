@@ -118,7 +118,7 @@ export function ProductForm({
           </div>
 
         <AddToCartButton
-        className="btn_addtocart"
+        className="btn_addtocart add-to-cart"
           disabled={!selectedVariant || !selectedVariant.availableForSale}
           onClick={() => {
             open('cart');
