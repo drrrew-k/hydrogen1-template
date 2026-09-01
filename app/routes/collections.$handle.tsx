@@ -618,6 +618,7 @@ export function SingleItem({item, collections}) {
                   ${item.variants[Object.keys(item.variants)[0]].price}
                 </span>
               </div>
+              <p>sku:{item.metafields[0].value}</p>
         </Link>
         </div>
       {/* <div className='single-product'>
