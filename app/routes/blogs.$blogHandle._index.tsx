@@ -5,7 +5,10 @@ import type {ArticleItemFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+  // return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+
+  const storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
+  return [{title: `${storeTitle} | Blogs`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -14,6 +17,9 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+
+  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`);
+  criticalData.store_settings = await store_settings.json();
 
   return defer({...deferredData, ...criticalData});
 }

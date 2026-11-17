@@ -61,17 +61,21 @@ exports.meta = function (_a) {
 };
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData, store_settings;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var deferredData, criticalData, store_settings, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     deferredData = loadDeferredData(args);
                     return [4 /*yield*/, loadCriticalData(args)];
                 case 1:
-                    criticalData = _a.sent();
+                    criticalData = _b.sent();
                     return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings")];
                 case 2:
-                    store_settings = _a.sent();
+                    store_settings = _b.sent();
+                    _a = criticalData;
+                    return [4 /*yield*/, store_settings.json()];
+                case 3:
+                    _a.store_settings = _b.sent();
                     return [2 /*return*/, remix_runtime_1.defer(__assign(__assign({}, deferredData), criticalData))];
             }
         });

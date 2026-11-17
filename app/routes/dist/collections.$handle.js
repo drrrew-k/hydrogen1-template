@@ -56,21 +56,22 @@ var react_2 = require("@remix-run/react");
 var axios_1 = require("axios");
 var react_3 = require("react");
 exports.meta = function (_a) {
-    var _b;
+    // return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
     var data = _a.data;
-    return [{ title: "Hydrogen | " + ((_b = data === null || data === void 0 ? void 0 : data.collection.title) !== null && _b !== void 0 ? _b : '') + " Collection" }];
+    var storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
+    return [{ title: storeTitle + " | Blogs" }];
 };
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData, handle, options, controller, collectionIdFetched, filterOptions, products, totalProducts, filteredVals, filters;
+        var deferredData, criticalData, handle, options, controller, collectionIdFetched, filterOptions, products, totalProducts, filteredVals, filters, store_settings, _a;
         var _this = this;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     deferredData = loadDeferredData(args);
                     return [4 /*yield*/, loadCriticalData(args)];
                 case 1:
-                    criticalData = _a.sent();
+                    criticalData = _b.sent();
                     handle = args.params.handle;
                     options = { timeout: 8000 };
                     controller = new AbortController();
@@ -116,7 +117,7 @@ function loader(args) {
                             });
                         }); })];
                 case 2:
-                    filterOptions = _a.sent();
+                    filterOptions = _b.sent();
                     products = filterOptions.products;
                     totalProducts = filterOptions.totalProducts;
                     filteredVals = [];
@@ -149,7 +150,14 @@ function loader(args) {
                             return fil;
                         })];
                 case 3:
-                    filters = _a.sent();
+                    filters = _b.sent();
+                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings")];
+                case 4:
+                    store_settings = _b.sent();
+                    _a = criticalData;
+                    return [4 /*yield*/, store_settings.json()];
+                case 5:
+                    _a.store_settings = _b.sent();
                     return [2 /*return*/, remix_runtime_1.defer(__assign(__assign(__assign({}, deferredData), criticalData), { products: products, filters: filters, handle: handle, totalProducts: totalProducts, collectionIdFetched: collectionIdFetched }))];
             }
         });
@@ -457,7 +465,7 @@ function Collection() {
                         React.createElement("div", { className: "collection-img", style: { backgroundImage: 'url(' + collection.image.url + ')' } },
                             React.createElement("img", { src: collection.image.url, alt: collection.title + " collection" })),
                     React.createElement("div", { className: 'collection-details' },
-                        React.createElement("p", { className: 'collection-header' },
+                        React.createElement("h1", { className: 'collection-header' },
                             "Shop ",
                             collection.title.toLowerCase()),
                         React.createElement("p", { className: "collection-description" }, collection.description)))),
@@ -488,7 +496,10 @@ function SingleItem(_a) {
                         React.createElement("h4", null, item.title),
                         React.createElement("span", { className: 'price' },
                             "$",
-                            item.variants[Object.keys(item.variants)[0]].price)))))));
+                            item.variants[Object.keys(item.variants)[0]].price)),
+                    React.createElement("p", null,
+                        "sku:",
+                        item.metafields[0].value))))));
 }
 exports.SingleItem = SingleItem;
 function ProductItem(_a) {

@@ -20,7 +20,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const criticalData = await loadCriticalData(args);
 
   const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`);
-
+  criticalData.store_settings = await store_settings.json();
 
   return defer({...deferredData, ...criticalData});
 }

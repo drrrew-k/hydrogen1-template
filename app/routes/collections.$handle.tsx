@@ -14,7 +14,10 @@ import axios from 'axios';
 import { useState, useLayoutEffect, useEffect, useMemo } from 'react';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  // return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+
+  const storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
+  return [{title: `${storeTitle} | Blogs`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -143,6 +146,10 @@ export async function loader(args: LoaderFunctionArgs) {
   });
     return fil;
   });
+
+
+  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`);
+  criticalData.store_settings = await store_settings.json();
 
   return defer({...deferredData, ...criticalData, products, filters, handle, totalProducts, collectionIdFetched});
 }
