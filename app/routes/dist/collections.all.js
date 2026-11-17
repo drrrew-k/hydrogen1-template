@@ -53,12 +53,14 @@ var react_1 = require("@remix-run/react");
 var hydrogen_1 = require("@shopify/hydrogen");
 var variants_1 = require("~/lib/variants");
 var PaginatedResourceSection_1 = require("~/components/PaginatedResourceSection");
-exports.meta = function () {
-    return [{ title: "Hydrogen | Products" }];
+exports.meta = function (data) {
+    // return [{title: `Hydrogen | Products`}];
+    var storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
+    return [{ title: storeTitle + " | Blogs" }];
 };
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var deferredData, criticalData;
+        var deferredData, criticalData, store_settings;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -66,6 +68,9 @@ function loader(args) {
                     return [4 /*yield*/, loadCriticalData(args)];
                 case 1:
                     criticalData = _a.sent();
+                    return [4 /*yield*/, fetch(context.env.BACKEND_URL + "/get-store1-settings")];
+                case 2:
+                    store_settings = _a.sent();
                     return [2 /*return*/, remix_runtime_1.defer(__assign(__assign({}, deferredData), criticalData))];
             }
         });
