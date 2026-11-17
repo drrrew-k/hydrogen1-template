@@ -53,8 +53,9 @@ var react_1 = require("@remix-run/react");
 var hydrogen_1 = require("@shopify/hydrogen");
 var variants_1 = require("~/lib/variants");
 var PaginatedResourceSection_1 = require("~/components/PaginatedResourceSection");
-exports.meta = function (data) {
+exports.meta = function (_a) {
     // return [{title: `Hydrogen | Products`}];
+    var data = _a.data;
     var storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
     return [{ title: storeTitle + " | Blogs" }];
 };
