@@ -19,7 +19,7 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  const store_settings = await fetch(`${context.env.BACKEND_URL}/get-store1-settings`);
+  const store_settings = await fetch(`${args.context.env.BACKEND_URL}/get-store1-settings`);
 
 
   return defer({...deferredData, ...criticalData});

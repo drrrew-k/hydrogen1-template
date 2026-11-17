@@ -68,7 +68,7 @@ function loader(args) {
                     return [4 /*yield*/, loadCriticalData(args)];
                 case 1:
                     criticalData = _a.sent();
-                    return [4 /*yield*/, fetch(context.env.BACKEND_URL + "/get-store1-settings")];
+                    return [4 /*yield*/, fetch(args.context.env.BACKEND_URL + "/get-store1-settings")];
                 case 2:
                     store_settings = _a.sent();
                     return [2 /*return*/, remix_runtime_1.defer(__assign(__assign({}, deferredData), criticalData))];
