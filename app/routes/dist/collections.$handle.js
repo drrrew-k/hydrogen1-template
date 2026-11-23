@@ -81,6 +81,15 @@ function loader(args) {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
+                                        console.log("handle:", handle);
+                                        console.log("Loader data:");
+                                        console.log(collection_response.data);
+                                        if (collection_response.data.collections.length == 0) {
+                                            console.log("No collection found for handle: ", handle);
+                                            throw new Response("Collection " + handle + " not found", {
+                                                status: 404
+                                            });
+                                        }
                                         collectionId = collection_response.data.collections[0].id;
                                         collectionIdFetched = collectionId;
                                         console.log("collectionId1: ", collectionId);

@@ -23,17 +23,25 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
   const {handle} = args.params;
   
   const options = { timeout: 8000 };
   const controller = new AbortController();
-
+  
   let collectionIdFetched = null;
   // console.log("Here1");
-    let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
+  let filterOptions = await axios.get('https://services.mybcapps.com/bc-sf-filter/search/collections?shop=avida-healthwear-inc.myshopify.com&q=' + handle).then(async collection_response => {
+      console.log("handle:", handle);
+      console.log("Loader data:");
+      console.log(collection_response.data);
+      if(collection_response.data.collections.length == 0) {
+        console.log("No collection found for handle: ", handle);
+        throw new Response(`Collection ${handle} not found`, {
+          status: 404,}
+        );
+      }
       // console.log("The response", collection_response.data.collections[0].id);
       const collectionId = collection_response.data.collections[0].id;
       collectionIdFetched = collectionId
