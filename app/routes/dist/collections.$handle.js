@@ -59,7 +59,7 @@ exports.meta = function (_a) {
     // return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
     var data = _a.data;
     var storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
-    return [{ title: storeTitle + " | Blogs" }];
+    return [{ title: storeTitle + " | Collection" }];
 };
 function loader(args) {
     return __awaiter(this, void 0, void 0, function () {

@@ -17,7 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   // return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 
   const storeTitle = data.store_settings.data.attributes.store_name || 'Hydrogen';
-  return [{title: `${storeTitle} | Blogs`}];
+  return [{title: `${storeTitle} | Collection`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
